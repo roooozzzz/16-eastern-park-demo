@@ -2,215 +2,452 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <title>16 EASTERN PARK</title>
-<script src="https://unpkg.com/lucide@latest"></script>
+<link rel="stylesheet" href="https://unpkg.com/@douyinfe/semi-icons@latest/dist/css/semi-icons.min.css">
 <style>
 :root{
---bg:#0a1a18;--card:#0f2824;--card-border:#1a3d36;--primary:#0D6B5E;--primary-light:#10927f;
---primary-dark:#0A4F46;--primary-darker:#083D36;--text:#e8f0ee;--text-secondary:#8aaba5;
---glow:rgba(13,107,94,.25);--radius:14px;
+  --bg:#0A1A18;--card:rgba(13,107,94,0.08);--card-solid:#0f2824;--card-border:rgba(13,107,94,0.15);
+  --primary:#0D6B5E;--primary-light:#14B8A6;--primary-dark:#0A4F46;--primary-darker:#083D36;
+  --primary-glow:rgba(13,107,94,0.3);--text:#FFFFFF;--text-secondary:rgba(255,255,255,0.7);
+  --text-tertiary:rgba(255,255,255,0.45);--text-brand:#14B8A6;
+  --success:#10B981;--warning:#F59E0B;--error:#EF4444;
+  --radius-sm:6px;--radius-md:12px;--radius-lg:16px;--radius-xl:24px;
 }
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro','PingFang SC',sans-serif;background:var(--bg);color:var(--text);max-width:430px;margin:0 auto;min-height:100vh;overflow-x:hidden;position:relative}
-body::before{content:'';position:fixed;top:-40%;left:-20%;width:80%;height:80%;background:radial-gradient(ellipse,rgba(13,107,94,.08) 0%,transparent 70%);pointer-events:none;z-index:0}
-body::after{content:'';position:fixed;bottom:-30%;right:-30%;width:70%;height:70%;background:radial-gradient(ellipse,rgba(13,107,94,.06) 0%,transparent 70%);pointer-events:none;z-index:0}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue","Microsoft YaHei",sans-serif;
+  background:var(--bg);color:var(--text);max-width:430px;margin:0 auto;min-height:100vh;
+  overflow-x:hidden;position:relative;-webkit-overflow-scrolling:touch;
+}
 
-.page{display:none;padding:0 0 80px;position:relative;z-index:1;animation:fadeIn .3s}
-.page.active{display:block}
-@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+/* === AMBIENT GLOW === */
+.ambient-glow{position:fixed;top:-30%;left:-20%;width:80%;height:70%;
+  background:radial-gradient(ellipse,rgba(13,107,94,0.1) 0%,transparent 70%);
+  pointer-events:none;z-index:0;animation:ambientPulse 6s ease-in-out infinite}
+.ambient-glow-2{position:fixed;bottom:-25%;right:-25%;width:65%;height:60%;
+  background:radial-gradient(ellipse,rgba(13,107,94,0.07) 0%,transparent 70%);
+  pointer-events:none;z-index:0;animation:ambientPulse 8s ease-in-out infinite 3s}
+@keyframes ambientPulse{0%,100%{opacity:.6;transform:scale(1)}50%{opacity:1;transform:scale(1.08)}}
 
-/* Tab Bar */
-.tabbar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:rgba(8,20,18,.95);backdrop-filter:blur(20px);border-top:1px solid var(--card-border);display:flex;z-index:100;padding-bottom:env(safe-area-inset-bottom)}
-.tabbar .tab{flex:1;text-align:center;padding:10px 0 6px;cursor:pointer;transition:.2s;display:flex;flex-direction:column;align-items:center}
-.tabbar .tab .tab-icon{width:24px;height:24px;color:var(--text-secondary);transition:.2s}
-.tabbar .tab span{display:block;font-size:10px;color:var(--text-secondary);margin-top:3px;transition:.2s}
-.tabbar .tab.active .tab-icon{color:var(--primary-light)}
-.tabbar .tab.active span{color:var(--primary-light)}
-.tabbar .tab.active{position:relative}
-.tabbar .tab.active::before{content:'';position:absolute;top:0;left:30%;right:30%;height:2px;background:var(--primary-light);border-radius:0 0 2px 2px}
+/* === PAGES === */
+.page{display:none;padding:0 0 90px;position:relative;z-index:1;opacity:0;transform:translateY(8px);
+  transition:opacity .35s cubic-bezier(.4,0,.2,1),transform .35s cubic-bezier(.4,0,.2,1)}
+.page.active{display:block;opacity:1;transform:translateY(0)}
+.page.slide-left{animation:slideLeft .35s cubic-bezier(.4,0,.2,1) forwards}
+.page.slide-right{animation:slideRight .35s cubic-bezier(.4,0,.2,1) forwards}
+@keyframes slideLeft{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:translateX(0)}}
+@keyframes slideRight{from{opacity:0;transform:translateX(-30px)}to{opacity:1;transform:translateX(0)}}
 
-/* Shared */
-.section-title{font-size:15px;font-weight:600;padding:20px 20px 12px;letter-spacing:.5px}
-.card{background:var(--card);border:1px solid var(--card-border);border-radius:var(--radius);overflow:hidden}
+/* === TAB BAR === */
+.tabbar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;
+  background:rgba(8,20,18,0.96);-webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);
+  border-top:1px solid rgba(13,107,94,0.15);display:flex;z-index:100;
+  padding-bottom:env(safe-area-inset-bottom)}
+.tab{flex:1;text-align:center;padding:10px 0 6px;cursor:pointer;display:flex;flex-direction:column;
+  align-items:center;position:relative;-webkit-user-select:none;user-select:none;min-height:50px}
+.tab .tab-icon{font-size:24px;color:var(--text-tertiary);transition:color .25s,transform .2s}
+.tab .tab-label{display:block;font-size:10px;color:var(--text-tertiary);margin-top:3px;transition:color .25s}
+.tab.active .tab-icon{color:var(--primary-light)}
+.tab.active .tab-label{color:var(--primary-light)}
+.tab.active::before{content:'';position:absolute;top:0;left:25%;right:25%;height:2px;
+  background:linear-gradient(90deg,transparent,var(--primary-light),transparent);border-radius:0 0 2px 2px}
+.tab:active .tab-icon{transform:scale(0.88)}
 
-/* ===== HOME ===== */
-.home-header{display:flex;justify-content:space-between;align-items:center;padding:16px 20px 8px}
-.home-header h1{font-size:16px;font-weight:700;letter-spacing:2px}
-.home-header .header-bell{width:22px;height:22px;color:var(--text-secondary);cursor:pointer}
+/* === SHARED === */
+.section-title{font-size:15px;font-weight:600;padding:24px 20px 14px;letter-spacing:.5px}
+.card{background:var(--card-solid);border:1px solid var(--card-border);border-radius:var(--radius-md);
+  overflow:hidden;transition:border-color .2s,transform .2s,box-shadow .2s}
+.card:active{transform:scale(0.98);border-color:rgba(13,107,94,0.4)}
 
-.banner{margin:12px 16px;border-radius:var(--radius);padding:28px 24px;position:relative;overflow:hidden;
-background:linear-gradient(135deg,#083D36 0%,#0A4F46 40%,#0D6B5E 100%)}
-.banner::before{content:'';position:absolute;top:-50%;right:-30%;width:200px;height:200px;background:radial-gradient(circle,rgba(16,146,127,.4),transparent 70%);border-radius:50%}
-.banner::after{content:'';position:absolute;bottom:-20%;left:10%;width:160px;height:80px;background:radial-gradient(ellipse,rgba(16,146,127,.2),transparent 70%)}
-.banner-tag{display:inline-block;font-size:10px;padding:3px 10px;border:1px solid rgba(255,255,255,.25);border-radius:20px;color:rgba(255,255,255,.8);margin-bottom:12px;position:relative;z-index:1}
-.banner h2{font-size:22px;font-weight:700;position:relative;z-index:1;line-height:1.4}
-.banner p{font-size:12px;color:rgba(255,255,255,.6);margin-top:8px;position:relative;z-index:1}
+/* Scroll entrance animation */
+.scroll-reveal{opacity:0;transform:translateY(20px);transition:opacity .5s cubic-bezier(.4,0,.2,1),transform .5s cubic-bezier(.4,0,.2,1)}
+.scroll-reveal.visible{opacity:1;transform:translateY(0)}
 
-.quick-actions{display:grid;grid-template-columns:repeat(4,1fr);gap:0;padding:20px 16px}
-.quick-action{text-align:center;cursor:pointer}
-.quick-action .icon-wrap{width:48px;height:48px;margin:0 auto 8px;border-radius:14px;background:rgba(13,107,94,.12);border:1px solid rgba(13,107,94,.2);display:flex;align-items:center;justify-content:center;transition:.2s}
-.quick-action:active .icon-wrap{transform:scale(.92);background:rgba(13,107,94,.2)}
-.quick-action .icon-wrap .lucide{width:22px;height:22px;color:var(--primary-light)}
-.quick-action span{font-size:12px;color:var(--text-secondary)}
+/* =============== HOME =============== */
+.home-header{display:flex;justify-content:space-between;align-items:center;padding:16px 20px 8px;
+  padding-top:calc(16px + env(safe-area-inset-top))}
+.home-header h1{font-size:17px;font-weight:700;letter-spacing:2.5px;
+  background:linear-gradient(135deg,#fff 60%,var(--primary-light));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.home-header .header-actions{display:flex;gap:16px;align-items:center}
+.home-header .header-actions i{font-size:20px;color:var(--text-secondary);cursor:pointer;
+  transition:color .2s,transform .15s}
+.home-header .header-actions i:active{transform:scale(0.88);color:var(--primary-light)}
 
-.hot-merchants{padding:0 0 0 16px;overflow-x:auto;display:flex;gap:12px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+/* Banner */
+.banner-container{margin:12px 16px;position:relative;overflow:hidden;border-radius:var(--radius-lg);
+  touch-action:pan-y pinch-zoom}
+.banner-track{display:flex;transition:transform .45s cubic-bezier(.4,0,.2,1);will-change:transform}
+.banner-track.dragging{transition:none}
+.banner-slide{min-width:100%;padding:32px 24px;position:relative;overflow:hidden}
+.banner-slide::before{content:'';position:absolute;inset:0;opacity:.6}
+.banner-slide:nth-child(1){background:linear-gradient(135deg,#083D36 0%,#0A4F46 40%,#0D6B5E 100%)}
+.banner-slide:nth-child(1)::before{background:radial-gradient(circle at 80% 20%,rgba(20,184,166,.35),transparent 60%)}
+.banner-slide:nth-child(2){background:linear-gradient(135deg,#0A4F46 0%,#0D6B5E 50%,#10927f 100%)}
+.banner-slide:nth-child(2)::before{background:radial-gradient(circle at 20% 80%,rgba(20,184,166,.3),transparent 60%)}
+.banner-slide:nth-child(3){background:linear-gradient(135deg,#083D36 0%,#0D6B5E 60%,#14B8A6 100%)}
+.banner-slide:nth-child(3)::before{background:radial-gradient(circle at 60% 30%,rgba(255,255,255,.08),transparent 50%)}
+.banner-tag{display:inline-block;font-size:10px;padding:3px 12px;border:1px solid rgba(255,255,255,.3);
+  border-radius:20px;color:rgba(255,255,255,.85);margin-bottom:12px;position:relative;z-index:1;
+  -webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);letter-spacing:.5px}
+.banner-slide h2{font-size:22px;font-weight:700;position:relative;z-index:1;line-height:1.4;letter-spacing:.5px}
+.banner-slide p{font-size:12px;color:rgba(255,255,255,.6);margin-top:8px;position:relative;z-index:1}
+.banner-dots{display:flex;justify-content:center;gap:6px;margin-top:14px}
+.banner-dot{width:6px;height:6px;border-radius:3px;background:rgba(255,255,255,.25);transition:all .3s;cursor:pointer}
+.banner-dot.active{width:20px;background:var(--primary-light)}
+
+/* Quick Actions */
+.quick-actions{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:20px 16px}
+.quick-action{text-align:center;cursor:pointer;-webkit-user-select:none;user-select:none;padding:8px 0}
+.quick-action .icon-wrap{width:50px;height:50px;margin:0 auto 8px;border-radius:14px;
+  background:rgba(13,107,94,0.1);border:1px solid rgba(13,107,94,0.18);
+  display:flex;align-items:center;justify-content:center;
+  transition:transform .2s cubic-bezier(.4,0,.2,1),background .2s,box-shadow .2s;will-change:transform}
+.quick-action .icon-wrap i{font-size:22px;color:var(--primary-light);transition:transform .3s cubic-bezier(.34,1.56,.64,1)}
+.quick-action:active .icon-wrap{transform:scale(0.9);background:rgba(13,107,94,0.2);
+  box-shadow:0 0 16px rgba(13,107,94,0.3)}
+.quick-action:active .icon-wrap i{transform:scale(1.15)}
+.quick-action span{font-size:12px;color:var(--text-secondary);letter-spacing:.3px}
+
+/* Hot Merchants */
+.hot-merchants{padding:0 0 0 16px;overflow-x:auto;display:flex;gap:12px;scrollbar-width:none;
+  -webkit-overflow-scrolling:touch;scroll-snap-type:x proximity}
 .hot-merchants::-webkit-scrollbar{display:none}
-.merchant-card-h{min-width:150px;background:var(--card);border:1px solid var(--card-border);border-radius:var(--radius);padding:16px;flex-shrink:0}
+.merchant-card-h{min-width:155px;background:var(--card-solid);border:1px solid var(--card-border);
+  border-radius:var(--radius-md);padding:18px;flex-shrink:0;scroll-snap-align:start;
+  position:relative;overflow:hidden;transition:transform .2s,border-color .2s,box-shadow .3s;will-change:transform}
+.merchant-card-h::before{content:'';position:absolute;top:-50%;right:-50%;width:100px;height:100px;
+  background:radial-gradient(circle,rgba(20,184,166,0.08),transparent 70%);transition:opacity .3s;opacity:0}
+.merchant-card-h:active{transform:scale(0.96);border-color:rgba(13,107,94,0.4);
+  box-shadow:0 0 20px rgba(13,107,94,0.15)}
+.merchant-card-h:active::before{opacity:1}
 .merchant-card-h:last-child{margin-right:16px}
-.merchant-card-h .m-icon{width:40px;height:40px;border-radius:10px;background:rgba(13,107,94,.15);display:flex;align-items:center;justify-content:center;margin-bottom:10px}
-.merchant-card-h .m-icon .lucide{width:20px;height:20px;color:var(--primary-light)}
-.merchant-card-h h4{font-size:13px;font-weight:600;margin-bottom:4px}
-.merchant-card-h p{font-size:11px;color:var(--primary-light)}
+.merchant-card-h .m-icon{width:42px;height:42px;border-radius:12px;background:rgba(13,107,94,0.15);
+  display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+.merchant-card-h .m-icon i{font-size:20px;color:var(--primary-light)}
+.merchant-card-h h4{font-size:14px;font-weight:600;margin-bottom:4px;letter-spacing:.3px}
+.merchant-card-h p{font-size:12px;color:var(--primary-light)}
 
-.activity-item{margin:0 16px 10px;padding:16px;background:var(--card);border:1px solid var(--card-border);border-radius:var(--radius);display:flex;gap:14px;align-items:center}
-.activity-dot{width:8px;height:8px;border-radius:50%;background:var(--primary-light);flex-shrink:0;box-shadow:0 0 8px var(--glow)}
-.activity-item h4{font-size:13px;font-weight:500}
-.activity-item p{font-size:11px;color:var(--text-secondary);margin-top:3px}
+/* Activity Items */
+.activity-item{margin:0 16px 10px;padding:16px 18px;background:var(--card-solid);border:1px solid var(--card-border);
+  border-radius:var(--radius-md);display:flex;gap:14px;align-items:center;
+  transition:transform .2s,border-color .2s;will-change:transform}
+.activity-item:active{transform:scale(0.98);border-color:rgba(13,107,94,0.35)}
+.activity-dot{width:8px;height:8px;border-radius:50%;background:var(--primary-light);flex-shrink:0;
+  box-shadow:0 0 10px rgba(20,184,166,0.5);animation:dotPulse 2.5s ease-in-out infinite}
+@keyframes dotPulse{0%,100%{box-shadow:0 0 6px rgba(20,184,166,0.4)}50%{box-shadow:0 0 14px rgba(20,184,166,0.7)}}
+.activity-item h4{font-size:14px;font-weight:500;letter-spacing:.3px}
+.activity-item p{font-size:12px;color:var(--text-secondary);margin-top:3px}
 
-/* ===== MERCHANTS ===== */
-.search-wrap{padding:16px 16px 0}
-.search-bar{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--card-border);border-radius:10px;padding:10px 14px;transition:.2s}
-.search-bar:focus-within{border-color:var(--primary)}
-.search-bar .lucide{width:18px;height:18px;color:var(--text-secondary);flex-shrink:0}
-.search-bar input{background:none;border:none;outline:none;color:var(--text);font-size:14px;width:100%}
-.search-bar input::placeholder{color:var(--text-secondary)}
+/* =============== MERCHANTS =============== */
+.merchants-header{padding:16px 20px 0;padding-top:calc(16px + env(safe-area-inset-top))}
+.merchants-header h2{font-size:20px;font-weight:700;letter-spacing:1px}
+.search-wrap{padding:16px 16px 0;position:sticky;top:0;z-index:10}
+.search-bar{display:flex;align-items:center;gap:10px;background:rgba(13,107,94,0.1);
+  border:1px solid rgba(13,107,94,0.18);border-radius:var(--radius-md);padding:0 14px;height:44px;
+  transition:border-color .3s,box-shadow .3s,background .3s}
+.search-bar:focus-within{border-color:var(--primary);box-shadow:0 0 16px rgba(13,107,94,0.2);
+  background:rgba(13,107,94,0.15)}
+.search-bar i{font-size:18px;color:var(--text-secondary);flex-shrink:0;transition:color .3s}
+.search-bar:focus-within i{color:var(--primary-light)}
+.search-bar input{background:none;border:none;outline:none;color:var(--text);font-size:14px;width:100%;
+  height:100%;letter-spacing:.3px}
+.search-bar input::placeholder{color:var(--text-tertiary)}
 
-.cat-pills{display:flex;gap:8px;padding:14px 16px;overflow-x:auto;scrollbar-width:none}
+.cat-pills{display:flex;gap:8px;padding:14px 16px;overflow-x:auto;scrollbar-width:none;position:relative}
 .cat-pills::-webkit-scrollbar{display:none}
-.cat-pill{padding:6px 16px;border-radius:20px;font-size:13px;white-space:nowrap;cursor:pointer;transition:.2s;
-background:var(--card);border:1px solid var(--card-border);color:var(--text-secondary)}
-.cat-pill.active{background:var(--primary);border-color:var(--primary);color:#fff}
+.cat-pill{padding:7px 18px;border-radius:var(--radius-xl);font-size:13px;white-space:nowrap;cursor:pointer;
+  transition:all .25s cubic-bezier(.4,0,.2,1);background:var(--card-solid);
+  border:1px solid var(--card-border);color:var(--text-secondary);letter-spacing:.3px;
+  -webkit-user-select:none;user-select:none}
+.cat-pill.active{background:var(--primary);border-color:var(--primary);color:#fff;
+  box-shadow:0 0 16px rgba(13,107,94,0.35)}
+.cat-pill:active{transform:scale(0.95)}
 
 .merchant-list{padding:0 16px}
-.merchant-item{background:var(--card);border:1px solid var(--card-border);border-radius:var(--radius);padding:16px;margin-bottom:10px;display:flex;gap:14px;align-items:center}
-.merchant-avatar{width:50px;height:50px;border-radius:12px;background:rgba(13,107,94,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.merchant-avatar .lucide{width:24px;height:24px;color:var(--primary-light)}
+.merchant-item{background:var(--card-solid);border:1px solid var(--card-border);border-radius:var(--radius-md);
+  padding:16px;margin-bottom:10px;display:flex;gap:14px;align-items:center;
+  transition:transform .25s cubic-bezier(.4,0,.2,1),border-color .2s,box-shadow .3s;will-change:transform}
+.merchant-item:active{transform:scale(0.97);border-color:rgba(13,107,94,0.4);
+  box-shadow:0 0 20px rgba(13,107,94,0.12)}
+.merchant-avatar{width:52px;height:52px;border-radius:var(--radius-md);background:rgba(13,107,94,0.12);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.merchant-avatar i{font-size:24px;color:var(--primary-light)}
 .merchant-info{flex:1}
-.merchant-info h4{font-size:14px;font-weight:600;margin-bottom:4px}
-.merchant-info .m-cat{display:inline-block;font-size:10px;padding:2px 8px;border-radius:4px;background:rgba(13,107,94,.15);color:var(--primary-light);margin-bottom:4px}
+.merchant-info h4{font-size:14px;font-weight:600;margin-bottom:5px;letter-spacing:.3px}
+.merchant-info .m-cat{display:inline-block;font-size:10px;padding:2px 8px;border-radius:4px;
+  background:rgba(13,107,94,0.12);color:var(--primary-light);margin-bottom:5px;letter-spacing:.3px}
 .merchant-info .m-desc{font-size:12px;color:var(--text-secondary)}
-.merchant-rating{font-size:13px;font-weight:600;color:var(--primary-light)}
+.merchant-rating{display:flex;flex-direction:column;align-items:center;gap:2px}
+.merchant-rating .rating-stars{display:flex;gap:1px}
+.merchant-rating .rating-stars i{font-size:11px;color:var(--warning)}
+.merchant-rating .rating-num{font-size:14px;font-weight:600;color:var(--primary-light)}
 
-/* ===== BENEFITS ===== */
-.benefits-header{padding:24px 20px 4px;text-align:center}
-.benefits-header h2{font-size:18px;font-weight:700;letter-spacing:1px}
-.benefits-header p{font-size:12px;color:var(--text-secondary);margin-top:6px}
+.empty-state{text-align:center;padding:48px 20px;color:var(--text-tertiary)}
+.empty-state i{font-size:40px;margin-bottom:12px;display:block;opacity:.5}
+.empty-state p{font-size:13px}
 
-.coupon-card{margin:10px 16px;background:var(--card);border:1px solid var(--card-border);border-radius:var(--radius);display:flex;overflow:hidden;position:relative}
-.coupon-left{padding:16px 20px;display:flex;flex-direction:column;justify-content:center;align-items:center;min-width:90px;
-background:linear-gradient(135deg,var(--primary-dark),var(--primary))}
+/* =============== BENEFITS =============== */
+.benefits-header{padding:24px 20px 4px;text-align:center;
+  padding-top:calc(24px + env(safe-area-inset-top))}
+.benefits-header h2{font-size:20px;font-weight:700;letter-spacing:1.5px;
+  background:linear-gradient(135deg,#fff 60%,var(--primary-light));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.benefits-header p{font-size:12px;color:var(--text-tertiary);margin-top:6px;letter-spacing:2px}
+
+/* Points Progress */
+.points-progress-wrap{margin:16px 16px 0;padding:16px 20px;background:var(--card-solid);
+  border:1px solid var(--card-border);border-radius:var(--radius-md)}
+.points-progress-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.points-progress-header span{font-size:13px;color:var(--text-secondary)}
+.points-progress-header strong{font-size:14px;color:var(--primary-light);font-weight:600}
+.points-bar{height:6px;background:rgba(13,107,94,0.15);border-radius:3px;overflow:hidden;position:relative}
+.points-bar-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--primary-light));
+  border-radius:3px;transition:width 1s cubic-bezier(.4,0,.2,1);position:relative}
+.points-bar-fill::after{content:'';position:absolute;right:0;top:-1px;width:8px;height:8px;
+  background:var(--primary-light);border-radius:50%;box-shadow:0 0 8px rgba(20,184,166,0.6)}
+.points-progress-label{display:flex;justify-content:space-between;margin-top:6px;font-size:11px;color:var(--text-tertiary)}
+
+/* Coupon Cards */
+.coupon-card{margin:10px 16px;background:var(--card-solid);border:1px solid var(--card-border);
+  border-radius:var(--radius-md);display:flex;overflow:hidden;position:relative;
+  transition:transform .2s,box-shadow .3s;will-change:transform}
+.coupon-card:active{transform:scale(0.98)}
+.coupon-left{padding:18px 20px;display:flex;flex-direction:column;justify-content:center;align-items:center;
+  min-width:92px;background:linear-gradient(135deg,var(--primary-dark),var(--primary));position:relative}
+.coupon-left::after{content:'';position:absolute;right:0;top:0;bottom:0;width:1px;
+  background:repeating-linear-gradient(to bottom,transparent 0px,transparent 4px,rgba(255,255,255,0.12) 4px,rgba(255,255,255,0.12) 8px)}
+.coupon-tear-top,.coupon-tear-bottom{position:absolute;right:-6px;width:12px;height:12px;
+  background:var(--bg);border-radius:50%;z-index:2}
+.coupon-tear-top{top:-6px}
+.coupon-tear-bottom{bottom:-6px}
 .coupon-left .amount{font-size:28px;font-weight:700;line-height:1}
-.coupon-left .unit{font-size:11px;margin-top:2px;opacity:.8}
+.coupon-left .unit{font-size:11px;margin-top:3px;opacity:.75}
 .coupon-right{flex:1;padding:14px 16px;display:flex;align-items:center;justify-content:space-between}
-.coupon-right h4{font-size:14px;font-weight:600;margin-bottom:4px}
+.coupon-right h4{font-size:14px;font-weight:600;margin-bottom:4px;letter-spacing:.3px}
 .coupon-right p{font-size:11px;color:var(--text-secondary)}
-.coupon-btn{padding:6px 14px;border-radius:20px;font-size:12px;cursor:pointer;transition:.2s;
-background:rgba(13,107,94,.15);border:1px solid var(--primary);color:var(--primary-light);white-space:nowrap}
-.coupon-btn:active{background:var(--primary);color:#fff}
-.coupon-btn.claimed{background:transparent;border-color:var(--card-border);color:var(--text-secondary);pointer-events:none}
+.coupon-btn{padding:7px 16px;border-radius:var(--radius-xl);font-size:12px;cursor:pointer;
+  transition:all .3s cubic-bezier(.4,0,.2,1);background:rgba(13,107,94,0.12);
+  border:1px solid var(--primary);color:var(--primary-light);white-space:nowrap;
+  min-width:56px;text-align:center;-webkit-user-select:none;user-select:none;position:relative;overflow:hidden}
+.coupon-btn:active{background:var(--primary);color:#fff;transform:scale(0.94)}
+.coupon-btn.claimed{background:transparent;border-color:var(--card-border);color:var(--text-tertiary);pointer-events:none}
+.coupon-btn .btn-check{display:none}
+.coupon-btn.claimed .btn-check{display:inline}
+.coupon-btn.claimed .btn-text{display:none}
 
-.points-mall{margin:10px 16px;padding:20px;background:var(--card);border:1px solid var(--card-border);border-radius:var(--radius)}
-.points-mall h3{font-size:15px;font-weight:600;margin-bottom:12px}
+/* Points Mall */
+.points-mall{margin:10px 16px 0;padding:20px;background:var(--card-solid);border:1px solid var(--card-border);
+  border-radius:var(--radius-md)}
+.points-mall-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.points-mall-header h3{font-size:15px;font-weight:600;letter-spacing:.5px}
+.points-mall-header span{font-size:12px;color:var(--text-brand);cursor:pointer}
 .points-items{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.points-item{text-align:center;padding:12px 4px;border-radius:10px;background:rgba(13,107,94,.08);border:1px solid rgba(13,107,94,.12);display:flex;flex-direction:column;align-items:center}
-.points-item .pi-icon{margin-bottom:6px}
-.points-item .pi-icon .lucide{width:24px;height:24px;color:var(--primary-light)}
-.points-item span{font-size:11px;display:block;color:var(--text-secondary)}
-.points-item em{font-size:11px;color:var(--primary-light);font-style:normal;margin-top:2px;display:block}
+.points-item{text-align:center;padding:14px 6px 12px;border-radius:var(--radius-md);
+  background:rgba(13,107,94,0.06);border:1px solid rgba(13,107,94,0.1);
+  display:flex;flex-direction:column;align-items:center;cursor:pointer;
+  transition:transform .2s,background .2s,border-color .2s;position:relative}
+.points-item:active{transform:scale(0.95);background:rgba(13,107,94,0.12);border-color:rgba(13,107,94,0.25)}
+.points-item .pi-icon{margin-bottom:8px;width:36px;height:36px;border-radius:10px;
+  background:rgba(13,107,94,0.12);display:flex;align-items:center;justify-content:center}
+.points-item .pi-icon i{font-size:18px;color:var(--primary-light)}
+.points-item span{font-size:12px;display:block;color:var(--text-secondary)}
+.points-item em{font-size:11px;color:var(--primary-light);font-style:normal;margin-top:3px;display:block}
+.points-item .item-badge{position:absolute;top:-4px;right:-4px;width:18px;height:18px;border-radius:50%;
+  background:var(--error);font-size:9px;color:#fff;display:flex;align-items:center;justify-content:center;
+  font-weight:600}
 
-/* ===== PROFILE ===== */
-.profile-header{padding:32px 20px 24px;text-align:center;position:relative;
-background:linear-gradient(180deg,#0A4F46 0%,var(--bg) 100%)}
-.profile-header::before{content:'';position:absolute;top:0;left:20%;width:60%;height:100%;background:radial-gradient(ellipse at top,rgba(16,146,127,.15),transparent 80%)}
-.avatar{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--primary-light));margin:0 auto 12px;display:flex;align-items:center;justify-content:center;position:relative;z-index:1}
-.avatar .lucide{width:28px;height:28px;color:#fff}
-.profile-header h3{font-size:16px;font-weight:700;position:relative;z-index:1}
-.profile-header .badge{display:inline-block;font-size:11px;padding:3px 12px;border-radius:20px;margin-top:8px;
-background:rgba(13,107,94,.2);border:1px solid var(--primary);color:var(--primary-light);position:relative;z-index:1}
+/* =============== PROFILE =============== */
+.profile-header{padding:36px 20px 28px;text-align:center;position:relative;overflow:hidden;
+  padding-top:calc(36px + env(safe-area-inset-top));
+  background:linear-gradient(180deg,#0A4F46 0%,var(--bg) 100%)}
+.profile-header::before{content:'';position:absolute;top:0;left:15%;width:70%;height:100%;
+  background:radial-gradient(ellipse at top,rgba(20,184,166,0.15),transparent 75%);
+  animation:profileGlow 4s ease-in-out infinite}
+@keyframes profileGlow{0%,100%{opacity:.6}50%{opacity:1}}
+.avatar{width:68px;height:68px;border-radius:50%;
+  background:linear-gradient(135deg,var(--primary),var(--primary-light));
+  margin:0 auto 14px;display:flex;align-items:center;justify-content:center;
+  position:relative;z-index:1;box-shadow:0 0 24px rgba(13,107,94,0.4)}
+.avatar i{font-size:28px;color:#fff}
+.profile-header h3{font-size:17px;font-weight:700;position:relative;z-index:1;letter-spacing:1px}
+.profile-header .badge{display:inline-block;font-size:11px;padding:4px 14px;border-radius:20px;margin-top:10px;
+  background:rgba(13,107,94,0.2);border:1px solid var(--primary);color:var(--primary-light);
+  position:relative;z-index:1;letter-spacing:.5px}
 
-.member-card{margin:0 16px 16px;padding:20px;background:var(--card);border:1px solid var(--card-border);border-radius:var(--radius)}
-.barcode{height:40px;background:repeating-linear-gradient(90deg,var(--text) 0px,var(--text) 2px,transparent 2px,transparent 4px,var(--text) 4px,var(--text) 5px,transparent 5px,transparent 8px,var(--text) 8px,var(--text) 9px,transparent 9px,transparent 12px);opacity:.3;border-radius:4px;margin-bottom:8px}
-.barcode-num{text-align:center;font-size:12px;color:var(--text-secondary);letter-spacing:3px;font-family:monospace}
+/* Member Card with 3D tilt */
+.member-card{margin:0 16px 16px;padding:22px;background:var(--card-solid);border:1px solid var(--card-border);
+  border-radius:var(--radius-lg);perspective:600px;position:relative;overflow:hidden;
+  transition:transform .15s ease-out;transform-style:preserve-3d;will-change:transform}
+.member-card::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;
+  background:linear-gradient(135deg,rgba(20,184,166,0.03),rgba(13,107,94,0.08));pointer-events:none}
+.member-card .card-shine{position:absolute;top:0;left:-100%;width:60%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.04),transparent);
+  transform:skewX(-20deg);pointer-events:none;transition:left .5s}
+.member-card:active .card-shine{left:150%}
+.barcode{height:42px;background:repeating-linear-gradient(90deg,
+  var(--text) 0px,var(--text) 2px,transparent 2px,transparent 5px,
+  var(--text) 5px,var(--text) 6px,transparent 6px,transparent 9px,
+  var(--text) 9px,var(--text) 10px,transparent 10px,transparent 14px,
+  var(--text) 14px,var(--text) 15px,transparent 15px,transparent 18px);
+  opacity:.2;border-radius:4px;margin-bottom:10px}
+.barcode-num{text-align:center;font-size:12px;color:var(--text-tertiary);letter-spacing:4px;
+  font-family:'SF Mono',SFMono-Regular,Menlo,monospace}
 
+/* Stats with animated counters */
 .stats{display:flex;margin:0 16px 16px;gap:8px}
-.stat{flex:1;text-align:center;padding:16px 8px;background:var(--card);border:1px solid var(--card-border);border-radius:var(--radius)}
-.stat .val{font-size:18px;font-weight:700;color:var(--primary-light)}
-.stat .label{font-size:11px;color:var(--text-secondary);margin-top:4px}
+.stat{flex:1;text-align:center;padding:18px 8px;background:var(--card-solid);border:1px solid var(--card-border);
+  border-radius:var(--radius-md);transition:transform .2s;cursor:pointer}
+.stat:active{transform:scale(0.96)}
+.stat .val{font-size:20px;font-weight:700;color:var(--primary-light);letter-spacing:.5px}
+.stat .label{font-size:11px;color:var(--text-secondary);margin-top:5px;letter-spacing:.3px}
 
+/* Menu with ripple */
 .menu-list{margin:0 16px}
-.menu-item{display:flex;align-items:center;justify-content:space-between;padding:16px;background:var(--card);border:1px solid var(--card-border);border-bottom:none;cursor:pointer;transition:.1s}
-.menu-item:first-child{border-radius:var(--radius) var(--radius) 0 0}
-.menu-item:last-child{border-bottom:1px solid var(--card-border);border-radius:0 0 var(--radius) var(--radius)}
-.menu-item:active{background:rgba(13,107,94,.08)}
-.menu-item .menu-label{font-size:14px;display:flex;align-items:center;gap:10px}
-.menu-item .menu-label .lucide{width:20px;height:20px;color:var(--primary-light)}
-.menu-item .arrow{color:var(--text-secondary)}
-.menu-item .arrow .lucide{width:16px;height:16px}
+.menu-item{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;
+  background:var(--card-solid);border:1px solid var(--card-border);border-bottom:none;
+  cursor:pointer;transition:background .15s;position:relative;overflow:hidden;
+  -webkit-user-select:none;user-select:none}
+.menu-item:first-child{border-radius:var(--radius-md) var(--radius-md) 0 0}
+.menu-item:last-child{border-bottom:1px solid var(--card-border);border-radius:0 0 var(--radius-md) var(--radius-md)}
+.menu-item:active{background:rgba(13,107,94,0.06)}
+.menu-item .menu-label{font-size:14px;display:flex;align-items:center;gap:12px;letter-spacing:.3px}
+.menu-item .menu-label i{font-size:20px;color:var(--primary-light)}
+.menu-item .arrow i{font-size:16px;color:var(--text-tertiary)}
+.menu-item .ripple{position:absolute;border-radius:50%;background:rgba(20,184,166,0.12);
+  transform:scale(0);animation:rippleAnim .5s ease-out forwards;pointer-events:none}
+@keyframes rippleAnim{to{transform:scale(4);opacity:0}}
 
-/* Toast */
-.toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(.9);background:rgba(10,31,28,.95);border:1px solid var(--primary);
-color:var(--text);padding:20px 32px;border-radius:14px;text-align:center;z-index:200;opacity:0;pointer-events:none;transition:.3s;backdrop-filter:blur(10px)}
+.logout-btn{margin:24px 16px;padding:14px;text-align:center;border-radius:var(--radius-md);
+  border:1px solid rgba(239,68,68,0.25);color:rgba(239,68,68,0.7);font-size:14px;
+  cursor:pointer;transition:all .2s;-webkit-user-select:none;user-select:none}
+.logout-btn:active{background:rgba(239,68,68,0.08);transform:scale(0.98)}
+
+.footer-text{text-align:center;font-size:11px;color:var(--text-tertiary);padding:12px 0 24px;letter-spacing:2px}
+
+/* ===== TOAST ===== */
+.toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(.85);
+  background:rgba(10,31,28,0.95);border:1px solid var(--primary);
+  -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);
+  color:var(--text);padding:24px 36px;border-radius:var(--radius-lg);text-align:center;
+  z-index:200;opacity:0;pointer-events:none;transition:all .3s cubic-bezier(.4,0,.2,1);
+  box-shadow:0 8px 32px rgba(0,0,0,0.4)}
 .toast.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
-.toast .check{margin-bottom:8px;display:flex;justify-content:center}
-.toast .check .lucide{width:32px;height:32px;color:var(--primary-light)}
+.toast .check{margin-bottom:10px;display:flex;justify-content:center}
+.toast .check i{font-size:32px;color:var(--primary-light)}
+
+/* Pull to refresh hint */
+.pull-hint{text-align:center;padding:8px;font-size:11px;color:var(--text-tertiary);
+  opacity:0;transform:translateY(-10px);transition:all .3s}
+.pull-hint.visible{opacity:1;transform:translateY(0)}
+
+/* Custom SVG icons inline */
+.svg-icon{display:inline-flex;align-items:center;justify-content:center;width:1em;height:1em}
+.svg-icon svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 </style>
 </head>
 <body>
+<div class="ambient-glow"></div>
+<div class="ambient-glow-2"></div>
 
-<!-- HOME -->
+<!-- ==================== HOME ==================== -->
 <div class="page active" id="page-home">
   <div class="home-header">
     <h1>16 EASTERN PARK</h1>
-    <i data-lucide="bell" class="header-bell"></i>
+    <div class="header-actions">
+      <i class="semi-icon semi-icon-search" onclick="switchTab(1)"></i>
+      <i class="semi-icon semi-icon-bell"></i>
+    </div>
   </div>
 
-  <div class="banner">
-    <div class="banner-tag">限时活动</div>
-    <h2>新春会员季<br>双倍积分周</h2>
-    <p>2026.02.08 -- 02.22 · 全场商户参与</p>
+  <div class="banner-container" id="bannerContainer">
+    <div class="banner-track" id="bannerTrack">
+      <div class="banner-slide">
+        <div class="banner-tag">限时活动</div>
+        <h2>新春会员季<br>双倍积分周</h2>
+        <p>2026.02.08 — 02.22 · 全场商户参与</p>
+      </div>
+      <div class="banner-slide">
+        <div class="banner-tag">艺术展览</div>
+        <h2>春日市集<br>限定开启</h2>
+        <p>2026.02.15 · 艺术广场 · 10:00-18:00</p>
+      </div>
+      <div class="banner-slide">
+        <div class="banner-tag">会员专属</div>
+        <h2>咖啡品鉴会<br>免费报名中</h2>
+        <p>2026.02.20 · 星巴克臻选门店</p>
+      </div>
+    </div>
+    <div class="banner-dots">
+      <div class="banner-dot active" onclick="goSlide(0)"></div>
+      <div class="banner-dot" onclick="goSlide(1)"></div>
+      <div class="banner-dot" onclick="goSlide(2)"></div>
+    </div>
   </div>
 
   <div class="quick-actions">
     <div class="quick-action" onclick="checkin()">
-      <div class="icon-wrap"><i data-lucide="check-square"></i></div>
+      <div class="icon-wrap"><i class="semi-icon semi-icon-check_circle"></i></div>
       <span>签到</span>
     </div>
     <div class="quick-action" onclick="switchTab(2)">
-      <div class="icon-wrap"><i data-lucide="coins"></i></div>
+      <div class="icon-wrap"><i class="semi-icon semi-icon-gift"></i></div>
       <span>积分</span>
     </div>
     <div class="quick-action" onclick="switchTab(2)">
-      <div class="icon-wrap"><i data-lucide="ticket"></i></div>
+      <div class="icon-wrap"><i class="semi-icon semi-icon-ticket"></i></div>
       <span>优惠券</span>
     </div>
     <div class="quick-action" onclick="switchTab(0)">
-      <div class="icon-wrap"><i data-lucide="calendar"></i></div>
+      <div class="icon-wrap"><i class="semi-icon semi-icon-calendar"></i></div>
       <span>活动</span>
     </div>
   </div>
 
   <div class="section-title">热门商户</div>
   <div class="hot-merchants">
-    <div class="merchant-card-h"><div class="m-icon"><i data-lucide="coffee"></i></div><h4>星巴克</h4><p>会员9折</p></div>
-    <div class="merchant-card-h"><div class="m-icon"><i data-lucide="store"></i></div><h4>全家</h4><p>满30减5</p></div>
-    <div class="merchant-card-h"><div class="m-icon"><i data-lucide="car"></i></div><h4>比亚迪</h4><p>试驾礼</p></div>
-    <div class="merchant-card-h"><div class="m-icon"><i data-lucide="flame"></i></div><h4>老码头火锅</h4><p>会员88折</p></div>
+    <div class="merchant-card-h">
+      <div class="m-icon"><i class="semi-icon semi-icon-coffee"></i></div>
+      <h4>星巴克</h4><p>会员9折</p>
+    </div>
+    <div class="merchant-card-h">
+      <div class="m-icon"><i class="semi-icon semi-icon-store"></i></div>
+      <h4>全家</h4><p>满30减5</p>
+    </div>
+    <div class="merchant-card-h">
+      <div class="m-icon"><svg class="svg-icon" style="width:20px;height:20px;color:var(--primary-light)"><svg viewBox="0 0 24 24"><path d="M5 17h14M7 11l3-6h4l3 6M4 17a2 2 0 1 0 4 0M16 17a2 2 0 1 0 4 0"/></svg></svg></div>
+      <h4>比亚迪</h4><p>试驾礼</p>
+    </div>
+    <div class="merchant-card-h">
+      <div class="m-icon"><i class="semi-icon semi-icon-flame"></i></div>
+      <h4>老码头火锅</h4><p>会员88折</p>
+    </div>
   </div>
 
   <div class="section-title">最新活动</div>
-  <div class="activity-item"><div class="activity-dot"></div><div><h4>艺术市集 · 春日限定</h4><p>02/15 -- 本周六 10:00-18:00</p></div></div>
-  <div class="activity-item"><div class="activity-dot"></div><div><h4>会员专属品鉴会</h4><p>02/20 -- 星巴克臻选门店</p></div></div>
-  <div class="activity-item"><div class="activity-dot"></div><div><h4>比亚迪新能源试驾日</h4><p>02/22 -- B1停车场</p></div></div>
+  <div class="activity-item scroll-reveal">
+    <div class="activity-dot"></div>
+    <div><h4>艺术市集 · 春日限定</h4><p>02/15 — 本周六 10:00-18:00</p></div>
+  </div>
+  <div class="activity-item scroll-reveal">
+    <div class="activity-dot"></div>
+    <div><h4>会员专属品鉴会</h4><p>02/20 — 星巴克臻选门店</p></div>
+  </div>
+  <div class="activity-item scroll-reveal">
+    <div class="activity-dot"></div>
+    <div><h4>比亚迪新能源试驾日</h4><p>02/22 — B1停车场</p></div>
+  </div>
 </div>
 
-<!-- MERCHANTS -->
+<!-- ==================== MERCHANTS ==================== -->
 <div class="page" id="page-merchants">
-  <div style="padding:16px 20px 0"><h2 style="font-size:18px;font-weight:700">商户</h2></div>
+  <div class="merchants-header"><h2>商户</h2></div>
   <div class="search-wrap">
     <div class="search-bar">
-      <i data-lucide="search"></i>
-      <input placeholder="搜索商户" oninput="filterMerchants(this.value)">
+      <i class="semi-icon semi-icon-search"></i>
+      <input placeholder="搜索商户名称" oninput="filterMerchants(this.value)">
     </div>
   </div>
   <div class="cat-pills" id="catPills">
@@ -223,56 +460,141 @@ color:var(--text);padding:20px 32px;border-radius:14px;text-align:center;z-index
   <div class="merchant-list" id="merchantList"></div>
 </div>
 
-<!-- BENEFITS -->
+<!-- ==================== BENEFITS ==================== -->
 <div class="page" id="page-benefits">
   <div class="benefits-header">
     <h2>会员权益中心</h2>
-    <p>艺术·生长·共生·社群</p>
+    <p>艺术 · 生长 · 共生 · 社群</p>
+  </div>
+
+  <div class="points-progress-wrap scroll-reveal">
+    <div class="points-progress-header">
+      <span>距离下一等级</span>
+      <strong>1,280 / 2,000 积分</strong>
+    </div>
+    <div class="points-bar">
+      <div class="points-bar-fill" id="pointsBarFill" style="width:0%"></div>
+    </div>
+    <div class="points-progress-label">
+      <span>Lv.5 金卡</span>
+      <span>Lv.6 黑金卡</span>
+    </div>
   </div>
 
   <div class="section-title">专属优惠券</div>
-  <div class="coupon-card"><div class="coupon-left"><span class="amount">¥20</span><span class="unit">满100可用</span></div><div class="coupon-right"><div><h4>新人专享券</h4><p>全场通用 · 30天有效</p></div><div class="coupon-btn" onclick="claimCoupon(this)">领取</div></div></div>
-  <div class="coupon-card"><div class="coupon-left"><span class="amount">¥10</span><span class="unit">无门槛</span></div><div class="coupon-right"><div><h4>星巴克专享券</h4><p>仅限星巴克 · 14天有效</p></div><div class="coupon-btn" onclick="claimCoupon(this)">领取</div></div></div>
-  <div class="coupon-card"><div class="coupon-left"><span class="amount">9折</span><span class="unit">会员日</span></div><div class="coupon-right"><div><h4>会员日折扣</h4><p>每周三 · 全场通用</p></div><div class="coupon-btn" onclick="claimCoupon(this)">领取</div></div></div>
+  <div class="coupon-card scroll-reveal">
+    <div class="coupon-left">
+      <div class="coupon-tear-top"></div>
+      <div class="coupon-tear-bottom"></div>
+      <span class="amount">¥20</span><span class="unit">满100可用</span>
+    </div>
+    <div class="coupon-right">
+      <div><h4>新人专享券</h4><p>全场通用 · 30天有效</p></div>
+      <div class="coupon-btn" onclick="claimCoupon(this)"><span class="btn-text">领取</span><span class="btn-check"><i class="semi-icon semi-icon-check_circle"></i></span></div>
+    </div>
+  </div>
+  <div class="coupon-card scroll-reveal">
+    <div class="coupon-left">
+      <div class="coupon-tear-top"></div>
+      <div class="coupon-tear-bottom"></div>
+      <span class="amount">¥10</span><span class="unit">无门槛</span>
+    </div>
+    <div class="coupon-right">
+      <div><h4>星巴克专享券</h4><p>仅限星巴克 · 14天有效</p></div>
+      <div class="coupon-btn" onclick="claimCoupon(this)"><span class="btn-text">领取</span><span class="btn-check"><i class="semi-icon semi-icon-check_circle"></i></span></div>
+    </div>
+  </div>
+  <div class="coupon-card scroll-reveal">
+    <div class="coupon-left">
+      <div class="coupon-tear-top"></div>
+      <div class="coupon-tear-bottom"></div>
+      <span class="amount">9折</span><span class="unit">会员日</span>
+    </div>
+    <div class="coupon-right">
+      <div><h4>会员日折扣</h4><p>每周三 · 全场通用</p></div>
+      <div class="coupon-btn" onclick="claimCoupon(this)"><span class="btn-text">领取</span><span class="btn-check"><i class="semi-icon semi-icon-check_circle"></i></span></div>
+    </div>
+  </div>
 
-  <div class="points-mall" style="margin-top:20px">
-    <h3>积分商城</h3>
+  <div class="points-mall scroll-reveal" style="margin-top:20px">
+    <div class="points-mall-header">
+      <h3>积分商城</h3>
+      <span>更多 <i class="semi-icon semi-icon-chevron_right" style="font-size:12px"></i></span>
+    </div>
     <div class="points-items">
-      <div class="points-item"><div class="pi-icon"><i data-lucide="coffee"></i></div><span>咖啡兑换券</span><em>500积分</em></div>
-      <div class="points-item"><div class="pi-icon"><i data-lucide="clapperboard"></i></div><span>电影票</span><em>800积分</em></div>
-      <div class="points-item"><div class="pi-icon"><i data-lucide="gift"></i></div><span>神秘礼盒</span><em>1200积分</em></div>
+      <div class="points-item">
+        <div class="item-badge">热</div>
+        <div class="pi-icon"><i class="semi-icon semi-icon-coffee"></i></div>
+        <span>咖啡兑换券</span><em>500积分</em>
+      </div>
+      <div class="points-item">
+        <div class="pi-icon"><svg class="svg-icon" style="width:18px;height:18px;color:var(--primary-light)"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 8h20"/><circle cx="8" cy="14" r="2"/></svg></svg></div>
+        <span>电影票</span><em>800积分</em>
+      </div>
+      <div class="points-item">
+        <div class="item-badge">新</div>
+        <div class="pi-icon"><i class="semi-icon semi-icon-gift"></i></div>
+        <span>神秘礼盒</span><em>1200积分</em>
+      </div>
     </div>
   </div>
 
   <div class="section-title">会员活动</div>
-  <div class="activity-item"><div class="activity-dot"></div><div><h4>春日积分翻倍</h4><p>消费即享双倍积分</p></div></div>
-  <div class="activity-item"><div class="activity-dot"></div><div><h4>推荐好友得100积分</h4><p>邀请新会员注册</p></div></div>
+  <div class="activity-item scroll-reveal">
+    <div class="activity-dot"></div>
+    <div><h4>春日积分翻倍</h4><p>消费即享双倍积分</p></div>
+  </div>
+  <div class="activity-item scroll-reveal">
+    <div class="activity-dot"></div>
+    <div><h4>推荐好友得100积分</h4><p>邀请新会员注册</p></div>
+  </div>
 </div>
 
-<!-- PROFILE -->
+<!-- ==================== PROFILE ==================== -->
 <div class="page" id="page-profile">
   <div class="profile-header">
-    <div class="avatar"><i data-lucide="user"></i></div>
+    <div class="avatar"><i class="semi-icon semi-icon-user"></i></div>
     <h3>16 EASTERN PARK 会员</h3>
-    <div class="badge">&#10022; 金卡会员</div>
+    <div class="badge"><i class="semi-icon semi-icon-star" style="font-size:11px;margin-right:4px"></i>金卡会员</div>
   </div>
-  <div class="member-card">
+
+  <div class="member-card" id="memberCard">
+    <div class="card-shine"></div>
     <div class="barcode"></div>
     <div class="barcode-num">6280 1688 0526 2026</div>
   </div>
+
   <div class="stats">
-    <div class="stat"><div class="val">1,280</div><div class="label">积分</div></div>
-    <div class="stat"><div class="val">3</div><div class="label">优惠券</div></div>
-    <div class="stat"><div class="val">Lv.5</div><div class="label">等级</div></div>
+    <div class="stat"><div class="val" data-target="1280" data-prefix="">0</div><div class="label">积分</div></div>
+    <div class="stat"><div class="val" data-target="3" data-prefix="">0</div><div class="label">优惠券</div></div>
+    <div class="stat"><div class="val" data-target="5" data-prefix="Lv.">Lv.0</div><div class="label">等级</div></div>
   </div>
+
   <div class="menu-list">
-    <div class="menu-item"><span class="menu-label"><i data-lucide="file-text"></i> 我的订单</span><span class="arrow"><i data-lucide="chevron-right"></i></span></div>
-    <div class="menu-item"><span class="menu-label"><i data-lucide="ticket"></i> 我的优惠券</span><span class="arrow"><i data-lucide="chevron-right"></i></span></div>
-    <div class="menu-item"><span class="menu-label"><i data-lucide="star"></i> 收藏商户</span><span class="arrow"><i data-lucide="chevron-right"></i></span></div>
-    <div class="menu-item"><span class="menu-label"><i data-lucide="car"></i> 停车缴费</span><span class="arrow"><i data-lucide="chevron-right"></i></span></div>
-    <div class="menu-item"><span class="menu-label"><i data-lucide="settings"></i> 设置</span><span class="arrow"><i data-lucide="chevron-right"></i></span></div>
+    <div class="menu-item" onclick="createRipple(event)">
+      <span class="menu-label"><i class="semi-icon semi-icon-file_text"></i> 我的订单</span>
+      <span class="arrow"><i class="semi-icon semi-icon-chevron_right"></i></span>
+    </div>
+    <div class="menu-item" onclick="createRipple(event)">
+      <span class="menu-label"><i class="semi-icon semi-icon-ticket"></i> 我的优惠券</span>
+      <span class="arrow"><i class="semi-icon semi-icon-chevron_right"></i></span>
+    </div>
+    <div class="menu-item" onclick="createRipple(event)">
+      <span class="menu-label"><i class="semi-icon semi-icon-star"></i> 收藏商户</span>
+      <span class="arrow"><i class="semi-icon semi-icon-chevron_right"></i></span>
+    </div>
+    <div class="menu-item" onclick="createRipple(event)">
+      <span class="menu-label"><svg class="svg-icon" style="width:20px;height:20px;color:var(--primary-light)"><svg viewBox="0 0 24 24"><path d="M5 17h14M7 11l3-6h4l3 6M4 17a2 2 0 1 0 4 0M16 17a2 2 0 1 0 4 0"/></svg></svg> 停车缴费</span>
+      <span class="arrow"><i class="semi-icon semi-icon-chevron_right"></i></span>
+    </div>
+    <div class="menu-item" onclick="createRipple(event)">
+      <span class="menu-label"><i class="semi-icon semi-icon-setting"></i> 设置</span>
+      <span class="arrow"><i class="semi-icon semi-icon-chevron_right"></i></span>
+    </div>
   </div>
-  <p style="text-align:center;font-size:11px;color:var(--text-secondary);margin-top:24px">生长在艺术中心的街区商业</p>
+
+  <div class="logout-btn" onclick="showToast('退出成功','已安全退出登录')">退出登录</div>
+  <div class="footer-text">生长在艺术中心的街区商业</div>
 </div>
 
 <!-- TOAST -->
@@ -281,64 +603,132 @@ color:var(--text);padding:20px 32px;border-radius:14px;text-align:center;z-index
 <!-- TAB BAR -->
 <div class="tabbar">
   <div class="tab active" onclick="switchTab(0)">
-    <i data-lucide="home" class="tab-icon"></i>
-    <span>首页</span>
+    <i class="semi-icon semi-icon-home tab-icon"></i>
+    <span class="tab-label">首页</span>
   </div>
   <div class="tab" onclick="switchTab(1)">
-    <i data-lucide="layout-grid" class="tab-icon"></i>
-    <span>商户</span>
+    <i class="semi-icon semi-icon-grid_view tab-icon"></i>
+    <span class="tab-label">商户</span>
   </div>
   <div class="tab" onclick="switchTab(2)">
-    <i data-lucide="layers" class="tab-icon"></i>
-    <span>权益</span>
+    <i class="semi-icon semi-icon-layers tab-icon"></i>
+    <span class="tab-label">权益</span>
   </div>
   <div class="tab" onclick="switchTab(3)">
-    <i data-lucide="user" class="tab-icon"></i>
-    <span>我的</span>
+    <i class="semi-icon semi-icon-user tab-icon"></i>
+    <span class="tab-label">我的</span>
   </div>
 </div>
 
 <script>
+// ===== TAB SWITCHING =====
 const pages=['page-home','page-merchants','page-benefits','page-profile'];
 const tabs=document.querySelectorAll('.tabbar .tab');
-
-function refreshIcons(){
-  lucide.createIcons();
-}
+let currentTab=0;
 
 function switchTab(i){
+  if(i===currentTab)return;
+  const dir=i>currentTab?'left':'right';
   pages.forEach((p,idx)=>{
-    document.getElementById(p).classList.toggle('active',idx===i);
+    const el=document.getElementById(p);
+    if(idx===i){
+      el.classList.add('active');
+      el.style.animation=`slide${dir==='left'?'Left':'Right'} .35s cubic-bezier(.4,0,.2,1) forwards`;
+    }else{
+      el.classList.remove('active');
+      el.style.animation='';
+    }
     tabs[idx].classList.toggle('active',idx===i);
   });
-  window.scrollTo(0,0);
+  currentTab=i;
+  window.scrollTo({top:0,behavior:'smooth'});
   if(i===1)renderMerchants();
-  setTimeout(refreshIcons,10);
+  if(i===2)setTimeout(()=>{
+    const fill=document.getElementById('pointsBarFill');
+    if(fill)fill.style.width='64%';
+  },100);
+  if(i===3)animateCounters();
+  setTimeout(initScrollReveal,100);
 }
 
-// Merchants data with lucide icon names
+// ===== BANNER =====
+let bannerIdx=0,bannerTimer,touchStartX=0,touchDeltaX=0,isDragging=false;
+const track=document.getElementById('bannerTrack');
+const dots=document.querySelectorAll('.banner-dot');
+const slideCount=3;
+
+function goSlide(i){
+  bannerIdx=i;
+  track.classList.remove('dragging');
+  track.style.transform=`translateX(-${i*100}%)`;
+  dots.forEach((d,idx)=>d.classList.toggle('active',idx===i));
+  resetBannerTimer();
+}
+function nextSlide(){goSlide((bannerIdx+1)%slideCount)}
+function resetBannerTimer(){clearInterval(bannerTimer);bannerTimer=setInterval(nextSlide,4000)}
+resetBannerTimer();
+
+const bc=document.getElementById('bannerContainer');
+bc.addEventListener('touchstart',e=>{
+  touchStartX=e.touches[0].clientX;isDragging=true;touchDeltaX=0;
+  track.classList.add('dragging');clearInterval(bannerTimer);
+},{passive:true});
+bc.addEventListener('touchmove',e=>{
+  if(!isDragging)return;
+  touchDeltaX=e.touches[0].clientX-touchStartX;
+  const offset=-bannerIdx*bc.offsetWidth+touchDeltaX;
+  track.style.transform=`translateX(${offset}px)`;
+},{passive:true});
+bc.addEventListener('touchend',()=>{
+  if(!isDragging)return;isDragging=false;track.classList.remove('dragging');
+  if(touchDeltaX<-40&&bannerIdx<slideCount-1)goSlide(bannerIdx+1);
+  else if(touchDeltaX>40&&bannerIdx>0)goSlide(bannerIdx-1);
+  else goSlide(bannerIdx);
+});
+
+// ===== MERCHANTS =====
 const merchants=[
-  {name:'星巴克咖啡',cat:'餐饮',icon:'coffee',rating:4.8,desc:'臻选门店·会员9折'},
-  {name:'全家便利店',cat:'零售',icon:'store',rating:4.5,desc:'24H营业·满30减5'},
-  {name:'比亚迪汽车',cat:'汽车',icon:'car',rating:4.9,desc:'新能源体验中心·试驾礼'},
-  {name:'老码头火锅',cat:'餐饮',icon:'flame',rating:4.7,desc:'地道重庆味·会员88折'}
+  {name:'星巴克咖啡',cat:'餐饮',icon:'coffee',rating:4.8,desc:'臻选门店·会员9折',semi:true},
+  {name:'全家便利店',cat:'零售',icon:'store',rating:4.5,desc:'24H营业·满30减5',semi:true},
+  {name:'比亚迪汽车',cat:'汽车',icon:'car',rating:4.9,desc:'新能源体验中心·试驾礼',semi:false},
+  {name:'老码头火锅',cat:'餐饮',icon:'flame',rating:4.7,desc:'地道重庆味·会员88折',semi:true}
 ];
 let currentCat='全部';
+
+function renderStars(rating){
+  const full=Math.floor(rating);const half=rating%1>=0.5;
+  let html='';
+  for(let i=0;i<full;i++)html+='<i class="semi-icon semi-icon-star" style="color:var(--warning)"></i>';
+  if(half)html+='<i class="semi-icon semi-icon-star" style="color:var(--warning);opacity:.5"></i>';
+  return html;
+}
+
+function getIconHTML(m){
+  if(m.icon==='car')return '<svg class="svg-icon" style="width:24px;height:24px;color:var(--primary-light)"><svg viewBox="0 0 24 24"><path d="M5 17h14M7 11l3-6h4l3 6M4 17a2 2 0 1 0 4 0M16 17a2 2 0 1 0 4 0"/></svg></svg>';
+  return `<i class="semi-icon semi-icon-${m.icon}"></i>`;
+}
 
 function renderMerchants(q=''){
   const list=document.getElementById('merchantList');
   const filtered=merchants.filter(m=>(currentCat==='全部'||m.cat===currentCat)&&(!q||m.name.includes(q)));
+  if(!filtered.length){
+    list.innerHTML='<div class="empty-state"><i class="semi-icon semi-icon-search"></i><p>没有找到相关商户</p></div>';
+    return;
+  }
   list.innerHTML=filtered.map(m=>`
-    <div class="merchant-item">
-      <div class="merchant-avatar"><i data-lucide="${m.icon}"></i></div>
+    <div class="merchant-item scroll-reveal">
+      <div class="merchant-avatar">${getIconHTML(m)}</div>
       <div class="merchant-info">
         <span class="m-cat">${m.cat}</span>
         <h4>${m.name}</h4>
         <span class="m-desc">${m.desc}</span>
       </div>
-      <div class="merchant-rating">${m.rating}</div>
+      <div class="merchant-rating">
+        <div class="rating-stars">${renderStars(m.rating)}</div>
+        <span class="rating-num">${m.rating}</span>
+      </div>
     </div>`).join('');
-  refreshIcons();
+  setTimeout(initScrollReveal,50);
 }
 
 function filterCat(el,cat){
@@ -349,31 +739,94 @@ function filterCat(el,cat){
 }
 function filterMerchants(q){renderMerchants(q)}
 
-// Check-in
-function checkin(){showToast('check','签到成功','+10 积分已到账')}
-
-// Coupon
+// ===== COUPON CLAIM =====
 function claimCoupon(btn){
   if(btn.classList.contains('claimed'))return;
-  btn.classList.add('claimed');btn.textContent='已领取';
-  showToast('ticket','领取成功','优惠券已放入卡包');
+  btn.style.transform='scale(0.8)';
+  setTimeout(()=>{
+    btn.classList.add('claimed');
+    btn.style.transform='';
+    showToast('领取成功','优惠券已放入卡包');
+  },150);
 }
 
-// Toast
-function showToast(iconName,title,sub){
+// ===== CHECK-IN =====
+function checkin(){showToast('签到成功','+10 积分已到账')}
+
+// ===== TOAST =====
+function showToast(title,sub){
   const t=document.getElementById('toast');
-  t.innerHTML=`<span class="check"><i data-lucide="${iconName}"></i></span><div style="font-size:15px;font-weight:600">${title}</div><div style="font-size:12px;color:var(--text-secondary);margin-top:4px">${sub}</div>`;
+  t.innerHTML=`<div class="check"><i class="semi-icon semi-icon-check_circle"></i></div>
+    <div style="font-size:15px;font-weight:600;letter-spacing:.3px">${title}</div>
+    <div style="font-size:12px;color:var(--text-secondary);margin-top:5px">${sub}</div>`;
   t.classList.add('show');
-  refreshIcons();
   setTimeout(()=>t.classList.remove('show'),1800);
 }
 
-// Init
-document.addEventListener('DOMContentLoaded',function(){
+// ===== RIPPLE EFFECT =====
+function createRipple(e){
+  const el=e.currentTarget;
+  const rect=el.getBoundingClientRect();
+  const ripple=document.createElement('span');
+  ripple.className='ripple';
+  const size=Math.max(rect.width,rect.height);
+  ripple.style.width=ripple.style.height=size+'px';
+  const x=(e.touches?e.touches[0].clientX:e.clientX)-rect.left-size/2;
+  const y=(e.touches?e.touches[0].clientY:e.clientY)-rect.top-size/2;
+  ripple.style.left=x+'px';ripple.style.top=y+'px';
+  el.appendChild(ripple);
+  setTimeout(()=>ripple.remove(),600);
+}
+
+// ===== MEMBER CARD 3D TILT =====
+const mc=document.getElementById('memberCard');
+if(mc){
+  mc.addEventListener('touchmove',e=>{
+    const rect=mc.getBoundingClientRect();
+    const x=(e.touches[0].clientX-rect.left)/rect.width-.5;
+    const y=(e.touches[0].clientY-rect.top)/rect.height-.5;
+    mc.style.transform=`perspective(600px) rotateY(${x*8}deg) rotateX(${-y*6}deg)`;
+  },{passive:true});
+  mc.addEventListener('touchend',()=>{mc.style.transform=''});
+}
+
+// ===== ANIMATED COUNTERS =====
+let countersAnimated=false;
+function animateCounters(){
+  if(countersAnimated)return;countersAnimated=true;
+  document.querySelectorAll('.stat .val').forEach(el=>{
+    const target=parseInt(el.dataset.target);
+    const prefix=el.dataset.prefix||'';
+    const duration=800;const start=performance.now();
+    function update(now){
+      const p=Math.min((now-start)/duration,1);
+      const eased=1-Math.pow(1-p,3);
+      const val=Math.round(eased*target);
+      el.textContent=prefix+(target>=1000?val.toLocaleString():val);
+      if(p<1)requestAnimationFrame(update);
+    }
+    requestAnimationFrame(update);
+  });
+}
+
+// ===== SCROLL REVEAL =====
+function initScrollReveal(){
+  const observer=new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target)}});
+  },{threshold:0.15});
+  document.querySelectorAll('.scroll-reveal:not(.visible)').forEach(el=>observer.observe(el));
+}
+
+// ===== INIT =====
+document.addEventListener('DOMContentLoaded',()=>{
   renderMerchants();
-  refreshIcons();
+  initScrollReveal();
+  // Animate points bar on benefits page if active
+  setTimeout(()=>{
+    const fill=document.getElementById('pointsBarFill');
+    if(fill&&document.getElementById('page-benefits').classList.contains('active'))fill.style.width='64%';
+  },500);
 });
-refreshIcons();
 </script>
 </body>
 </html>
