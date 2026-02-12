@@ -532,11 +532,27 @@ function BannerPage(){
 }
 
 function ContentPage(){
-  const [tab,setTab]=useState('activities');
+  const [tab,setTab]=useState('moments');
   return h('div',null,
     h('div',{className:'tabs'},
+      h('div',{className:'tab'+(tab==='moments'?' active':''),onClick:()=>setTab('moments')},'每日瞬间'),
       h('div',{className:'tab'+(tab==='activities'?' active':''),onClick:()=>setTab('activities')},'活动管理'),
       h('div',{className:'tab'+(tab==='announcements'?' active':''),onClick:()=>setTab('announcements')},'公告管理')
+    ),
+    tab==='moments'&&h('div',{className:'card'},
+      h('div',{className:'toolbar'},h('div',null),h('button',{className:'btn btn-primary'},h(LucideIcon,{name:'plus',size:14}),'发布瞬间')),
+      h('table',{className:'data-table'},
+        h('thead',null,h('tr',null,['预览','内容','发布时间','点赞','状态','操作'].map(t=>h('th',{key:t},t)))),
+        h('tbody',null,MOMENTS.map(m=>
+          h('tr',{key:m.id},
+            h('td',null,h('img',{src:m.image,style:{width:60,height:60,borderRadius:4,objectFit:'cover'}})),
+            h('td',{style:{maxWidth:300}},m.content),
+            h('td',null,m.time),h('td',null,m.likes),
+            h('td',null,h('span',{className:'status-tag active'},m.status)),
+            h('td',null,h('button',{className:'btn btn-sm'},h(LucideIcon,{name:'trash-2',size:12}),'删除'))
+          )
+        ))
+      )
     ),
     tab==='activities'&&h('div',{className:'card'},
       h('div',{className:'toolbar'},h('div',null),h('button',{className:'btn btn-primary'},h(LucideIcon,{name:'plus',size:14}),'新增活动')),
@@ -561,6 +577,37 @@ function ContentPage(){
             h('td',null,h('button',{className:'btn btn-sm'},h(LucideIcon,{name:'pencil',size:12}),'编辑'))
           )
         ))
+      )
+    )
+  );
+}
+
+function JointPage(){
+  return h('div',null,
+    h('div',{className:'card'},
+      h('div',{className:'toolbar'},
+        h('div',{className:'toolbar-left'},h('span',{style:{fontSize:14,color:'#666'}},'商户跨店流量互助配置')),
+        h('button',{className:'btn btn-primary'},h(LucideIcon,{name:'plus',size:14}),'新增配置')
+      ),
+      h('table',{className:'data-table'},
+        h('thead',null,h('tr',null,['主商户 (消费端)','联名商户 (权益端)','发放权益','状态','操作'].map(t=>h('th',{key:t},t)))),
+        h('tbody',null,JOINT_RULES.map(r=>
+          h('tr',{key:r.id},
+            h('td',{style:{fontWeight:500}},r.from),
+            h('td',null,r.to),
+            h('td',{style:{color:'var(--brand)',fontWeight:600}},r.benefit),
+            h('td',null,h(Toggle,{value:r.status})),
+            h('td',null,h('button',{className:'btn btn-sm'},h(LucideIcon,{name:'pencil',size:12}),'编辑'))
+          )
+        ))
+      )
+    ),
+    h('div',{className:'card',style:{marginTop:24,background:'var(--brand-bg)',borderColor:'var(--brand)'}},
+      h('h3',null,h(LucideIcon,{name:'info',size:18,color:'var(--brand)'}),'策略说明'),
+      h('p',{style:{fontSize:13,color:'#666',lineHeight:1.6}},
+        '1. 主商户：用户在该商户完成支付后，小程序将自动弹出联名商户的权益。',h('br'),
+        '2. 联名商户：提供实际到店兑换权益的商户。',h('br'),
+        '3. 此功能旨在建立街区内的商户流量互助网络，降低用户的跨店决策成本。'
       )
     )
   );
@@ -606,6 +653,19 @@ function SettingsPage(){
 }
 
 // ===== APP =====
+const MOMENTS = [
+  {id:1,image:'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400',content:'晨光中的东韵16号，光影流转，万物生长。',time:'2026-02-13 08:30',likes:24,status:'已发布'},
+  {id:2,image:'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400',content:'一杯手冲，开启今日的艺术之旅。',time:'2026-02-12 10:15',likes:45,status:'已发布'},
+  {id:3,image:'https://images.unsplash.com/photo-1559339352-11d035aa65de?w=400',content:'街区的转角，总有不经意的温柔。',time:'2026-02-11 17:00',likes:32,status:'已发布'},
+];
+
+const JOINT_RULES = [
+  {id:1,from:'星巴克',to:'留一手火锅',benefit:'饭后消食甜品一份',status:true},
+  {id:2,from:'留一手火锅',to:'比亚迪体验中心',benefit:'免费车辆检测/洗车',status:true},
+  {id:3,from:'比亚迪体验中心',to:'全家便利店',benefit:'冷萃咖啡一瓶',status:true},
+  {id:4,from:'全家便利店',to:'MANNER COFFEE',benefit:'升杯优惠券',status:false},
+];
+
 const MENU = [
   {key:'dashboard',label:'数据概览',icon:'layout-dashboard'},
   {key:'merchants',label:'商户管理',icon:'store'},
@@ -614,12 +674,13 @@ const MENU = [
   {key:'points',label:'积分管理',icon:'coins'},
   {key:'banners',label:'Banner管理',icon:'image'},
   {key:'content',label:'内容管理',icon:'file-text'},
+  {key:'joint',label:'联名互助',icon:'handshake'},
   {key:'settings',label:'系统设置',icon:'settings'},
 ];
 
 function App(){
   const [active,setActive]=useState('dashboard');
-  const pages={dashboard:Dashboard,merchants:MerchantPage,members:MemberPage,coupons:CouponPage,points:PointsPage,banners:BannerPage,content:ContentPage,settings:SettingsPage};
+  const pages={dashboard:Dashboard,merchants:MerchantPage,members:MemberPage,coupons:CouponPage,points:PointsPage,banners:BannerPage,content:ContentPage,joint:JointPage,settings:SettingsPage};
   const Page=pages[active];
   const menuLabel=MENU.find(m=>m.key===active)?.label||'';
   return h('div',{className:'layout'},

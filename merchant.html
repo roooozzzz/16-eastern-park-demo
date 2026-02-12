@@ -354,6 +354,35 @@ function PageActivity() {
   </div>;
 }
 
+function PageJoint() {
+  const jointData = [
+    {key:1,to:'留一手火锅',benefit:'饭后消食甜品一份',trigger:'消费满¥50',issued:45,used:12,status:true},
+    {key:2,to:'全家便利店',benefit:'冷萃咖啡一瓶',trigger:'消费满¥100',issued:12,used:5,status:false},
+  ];
+  return <div>
+    <div className="page-title">联名互助</div>
+    <div className="card" style={{background:'var(--brand-bg)',borderColor:'var(--brand)',marginBottom:20}}>
+      <div style={{display:'flex',gap:12,alignItems:'flex-start'}}>
+        <LIcon name="info" size={20} color="var(--brand)" />
+        <div style={{fontSize:13,color:'#666',lineHeight:1.6}}>
+          <strong>什么是联名互助？</strong><br />
+          当用户在您的店铺消费达到设定条件时，系统会自动发放街区内其他合作商户的“互助权益”。同样地，其他商户也会为您的店铺导流。这有助于街区内的流量循环和用户粘性。
+        </div>
+      </div>
+    </div>
+    <div className="card" style={{padding:0}}>
+      <Table dataSource={jointData} pagination={false} size="middle" columns={[
+        {title:'获赠商户',dataIndex:'to',key:'to',render:t=><span style={{fontWeight:500}}>{t}</span>},
+        {title:'获赠权益',dataIndex:'benefit',key:'benefit'},
+        {title:'触发条件',dataIndex:'trigger',key:'trigger'},
+        {title:'已发放',dataIndex:'issued',key:'issued'},
+        {title:'已核销',dataIndex:'used',key:'used'},
+        {title:'启用状态',dataIndex:'status',key:'status',render:s=><Radio.Group value={s} size="small"><Radio.Button value={true}>启用</Radio.Button><Radio.Button value={false}>停用</Radio.Button></Radio.Group>},
+      ]} />
+    </div>
+  </div>;
+}
+
 function PageReview() {
   const [data, setData] = useState(reviews);
   const [replyModal, setReplyModal] = useState(null);
@@ -446,13 +475,14 @@ const menuItems = [
   {key:'coupon',label:'优惠券管理',icon:'ticket'},
   {key:'member',label:'会员分析',icon:'users'},
   {key:'activity',label:'活动参与',icon:'party-popper'},
+  {key:'joint',label:'联名互助',icon:'handshake'},
   {key:'review',label:'评价管理',icon:'message-square'},
   {key:'settings',label:'店铺设置',icon:'settings'},
 ];
 
 function App() {
   const [current, setCurrent] = useState('overview');
-  const pages = {overview:PageOverview,verify:PageVerify,coupon:PageCoupon,member:PageMember,activity:PageActivity,review:PageReview,settings:PageSettings};
+  const pages = {overview:PageOverview,verify:PageVerify,coupon:PageCoupon,member:PageMember,activity:PageActivity,joint:PageJoint,review:PageReview,settings:PageSettings};
   const PageComp = pages[current];
   return <div className="layout">
     <div className="header">

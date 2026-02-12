@@ -141,6 +141,30 @@ body{
 .activity-item h4{font-size:14px;font-weight:500;letter-spacing:.3px}
 .activity-item p{font-size:12px;color:var(--text-secondary);margin-top:3px}
 
+/* Moments Feed */
+.moments-feed{padding:0 16px}
+.moment-card{background:var(--card-solid);border:1px solid var(--card-border);border-radius:var(--radius-md);overflow:hidden;margin-bottom:12px}
+.moment-img{height:160px;background-size:cover;background-position:center}
+.moment-content{padding:12px 16px}
+.moment-content p{font-size:13px;line-height:1.5;color:var(--text-secondary);margin-bottom:8px}
+.moment-footer{display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--text-tertiary)}
+.moment-actions{display:flex;align-items:center;gap:4px}
+.moment-actions i{width:12px;height:12px}
+
+/* Joint Reward Modal */
+.reward-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:1000;display:none;align-items:center;justify-content:center;padding:40px;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.reward-overlay.show{display:flex}
+.reward-card{background:linear-gradient(135deg,#0D6B5E,#083D36);width:100%;border-radius:var(--radius-xl);padding:32px 24px;text-align:center;position:relative;border:1px solid rgba(255,255,255,0.1);box-shadow:0 20px 50px rgba(0,0,0,0.5);transform:scale(0.8);opacity:0;transition:all .4s cubic-bezier(.34,1.56,.64,1)}
+.reward-overlay.show .reward-card{transform:scale(1);opacity:1}
+.reward-card h3{font-size:18px;margin-bottom:8px}
+.reward-card p{font-size:13px;color:rgba(255,255,255,0.7);margin-bottom:24px}
+.reward-badge{width:80px;height:80px;background:rgba(255,255,255,0.1);border-radius:50%;margin:0 auto 20px;display:flex;align-items:center;justify-content:center}
+.reward-badge i{width:40px;height:40px;color:var(--primary-light)}
+.reward-benefit{font-size:24px;font-weight:700;color:#fff;margin-bottom:8px}
+.reward-to{font-size:12px;color:var(--primary-light);margin-bottom:32px}
+.reward-btn{background:#fff;color:var(--primary);padding:14px;border-radius:var(--radius-md);font-weight:600;font-size:14px}
+.reward-close{position:absolute;bottom:-60px;left:50%;transform:translateX(-50%);color:rgba(255,255,255,0.5)}
+
 /* =============== MERCHANTS =============== */
 .merchants-header{padding:16px 20px 0;padding-top:calc(16px + env(safe-area-inset-top))}
 .merchants-header h2{font-size:20px;font-weight:700;letter-spacing:1px}
@@ -420,6 +444,20 @@ body{
     </div>
   </div>
 
+  <div class="section-title">每日瞬间</div>
+  <div class="moments-feed">
+    <div class="moment-card scroll-reveal">
+      <div class="moment-img" style="background-image:url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400')"></div>
+      <div class="moment-content">
+        <p>晨光中的东韵16号，光影流转，万物生长。</p>
+        <div class="moment-footer">
+          <span>08:30</span>
+          <div class="moment-actions"><i data-lucide="heart"></i> 24</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="section-title">热门商户</div>
   <div class="hot-merchants">
     <div class="merchant-card-h">
@@ -537,18 +575,19 @@ body{
     </div>
     <div class="points-items">
       <div class="points-item">
-        <div class="item-badge">热</div>
-        <div class="pi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:20px;height:20px;color:var(--primary-light)"><path d="M17 8h1a4 4 0 110 8h-1"/><path d="M3 8h14v9a4 4 0 01-4 4H7a4 4 0 01-4-4V8z"/><line x1="6" y1="2" x2="6" y2="4"/><line x1="10" y1="2" x2="10" y2="4"/><line x1="14" y1="2" x2="14" y2="4"/></svg></div>
-        <span>咖啡兑换券</span><em>500积分</em>
+        <div class="item-badge">特权</div>
+        <div class="pi-icon"><i data-lucide="umbrella"></i></div>
+        <span>雨天借伞</span><em>0积分/会员</em>
       </div>
       <div class="points-item">
-        <div class="pi-icon"><svg class="svg-icon" style="width:18px;height:18px;color:var(--primary-light)"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 8h20"/><circle cx="8" cy="14" r="2"/></svg></svg></div>
-        <span>电影票</span><em>800积分</em>
+        <div class="item-badge">特权</div>
+        <div class="pi-icon"><i data-lucide="package"></i></div>
+        <span>快递代收</span><em>50积分/次</em>
       </div>
       <div class="points-item">
-        <div class="item-badge">新</div>
-        <div class="pi-icon"><i data-lucide="gift"></i></div>
-        <span>神秘礼盒</span><em>1200积分</em>
+        <div class="item-badge">HOT</div>
+        <div class="pi-icon"><i data-lucide="coffee"></i></div>
+        <span>星巴克升杯</span><em>200积分</em>
       </div>
     </div>
   </div>
@@ -609,6 +648,19 @@ body{
 
   <div class="logout-btn" onclick="showToast('退出成功','已安全退出登录')">退出登录</div>
   <div class="footer-text">生长在艺术中心的街区商业</div>
+</div>
+
+<!-- REWARD MODAL -->
+<div class="reward-overlay" id="rewardOverlay">
+  <div class="reward-card">
+    <div class="reward-badge"><i data-lucide="handshake"></i></div>
+    <h3>东韵联名 · 互助权益</h3>
+    <p>感谢您在街区的日常互动，<br>由于您刚刚完成了签到，特赠送：</p>
+    <div class="reward-benefit">饭后消食甜品券</div>
+    <div class="reward-to">由 留一手火锅 提供</div>
+    <div class="reward-btn" onclick="closeReward()">存入券包</div>
+    <div class="reward-close" onclick="closeReward()"><i data-lucide="x-circle"></i></div>
+  </div>
 </div>
 
 <!-- TOAST -->
@@ -770,7 +822,17 @@ function claimCoupon(btn){
 }
 
 // ===== CHECK-IN =====
-function checkin(){showToast('签到成功','+10 积分已到账')}
+function checkin(){
+  showToast('签到成功','+10 积分已到账');
+  setTimeout(()=>{
+    document.getElementById('rewardOverlay').classList.add('show');
+    if(window.lucide)lucide.createIcons();
+  },2000);
+}
+function closeReward(){
+  document.getElementById('rewardOverlay').classList.remove('show');
+  showToast('已存入卡包','可在“权益”或“我的”中查看');
+}
 
 // ===== TOAST =====
 function showToast(title,sub){
