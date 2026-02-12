@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <title>16 EASTERN PARK</title>
-<link rel="stylesheet" href="https://unpkg.com/@douyinfe/semi-icons@latest/dist/css/semi-icons.min.css">
+<script src="https://unpkg.com/lucide@0.344.0/dist/umd/lucide.min.js"></script>
 <style>
 :root{
   --bg:#0A1A18;--card:rgba(13,107,94,0.08);--card-solid:#0f2824;--card-border:rgba(13,107,94,0.15);
@@ -42,17 +42,17 @@ body{
 
 /* === TAB BAR === */
 .tabbar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;
-  background:rgba(8,20,18,0.96);-webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);
-  border-top:1px solid rgba(13,107,94,0.15);display:flex;z-index:100;
+  background:#0A1A18;border-top:1px solid rgba(13,107,94,0.2);display:flex;z-index:100;
   padding-bottom:env(safe-area-inset-bottom)}
-.tab{flex:1;text-align:center;padding:10px 0 6px;cursor:pointer;display:flex;flex-direction:column;
-  align-items:center;position:relative;-webkit-user-select:none;user-select:none;min-height:50px}
-.tab .tab-icon{font-size:24px;color:var(--text-tertiary);transition:color .25s,transform .2s}
-.tab .tab-label{display:block;font-size:10px;color:var(--text-tertiary);margin-top:3px;transition:color .25s}
-.tab.active .tab-icon{color:var(--primary-light)}
-.tab.active .tab-label{color:var(--primary-light)}
-.tab.active::before{content:'';position:absolute;top:0;left:25%;right:25%;height:2px;
-  background:linear-gradient(90deg,transparent,var(--primary-light),transparent);border-radius:0 0 2px 2px}
+.tab{flex:1;text-align:center;padding:6px 0 4px;cursor:pointer;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;position:relative;-webkit-user-select:none;user-select:none;height:56px}
+.tab .tab-icon{color:rgba(255,255,255,0.45);transition:color .25s,transform .2s;display:flex;align-items:center;justify-content:center}
+.tab .tab-icon [data-lucide]{width:24px;height:24px}
+.tab .tab-label{display:block;font-size:11px;font-weight:500;color:rgba(255,255,255,0.45);margin-top:4px;transition:color .25s}
+.tab.active .tab-icon{color:#14B8A6}
+.tab.active .tab-label{color:#14B8A6;font-weight:600}
+.tab.active::before{content:'';position:absolute;top:0;left:20%;right:20%;height:2.5px;
+  background:linear-gradient(90deg,transparent,#14B8A6,transparent);border-radius:0 0 2px 2px}
 .tab:active .tab-icon{transform:scale(0.88)}
 
 /* === SHARED === */
@@ -346,6 +346,20 @@ body{
 /* Custom SVG icons inline */
 .svg-icon{display:inline-flex;align-items:center;justify-content:center;width:1em;height:1em}
 .svg-icon svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* Lucide icons */
+[data-lucide]{display:inline-block;vertical-align:middle;width:20px;height:20px}
+.quick-action .icon-wrap [data-lucide]{width:22px;height:22px;color:var(--primary-light)}
+.merchant-avatar [data-lucide]{width:24px;height:24px;color:var(--primary-light)}
+.m-icon [data-lucide]{width:20px;height:20px;color:var(--primary-light)}
+.pi-icon [data-lucide]{width:18px;height:18px;color:var(--primary-light)}
+.menu-item .menu-label [data-lucide]{width:20px;height:20px;color:var(--primary-light)}
+.menu-item .arrow [data-lucide]{width:16px;height:16px;color:var(--text-tertiary)}
+.header-actions [data-lucide]{width:20px;height:20px;color:var(--text-secondary);cursor:pointer}
+.avatar [data-lucide]{width:28px;height:28px;color:#fff}
+.toast .check [data-lucide]{width:32px;height:32px;color:var(--primary-light)}
+.empty-state [data-lucide]{width:40px;height:40px;opacity:.5;margin-bottom:12px}
+.rating-stars [data-lucide]{width:11px;height:11px}
 </style>
 </head>
 <body>
@@ -357,8 +371,8 @@ body{
   <div class="home-header">
     <h1>16 EASTERN PARK</h1>
     <div class="header-actions">
-      <i class="semi-icon semi-icon-search" onclick="switchTab(1)"></i>
-      <i class="semi-icon semi-icon-bell"></i>
+      <i data-lucide="search" onclick="switchTab(1)"></i>
+      <i data-lucide="bell"></i>
     </div>
   </div>
 
@@ -389,19 +403,19 @@ body{
 
   <div class="quick-actions">
     <div class="quick-action" onclick="checkin()">
-      <div class="icon-wrap"><i class="semi-icon semi-icon-check_circle"></i></div>
+      <div class="icon-wrap"><i data-lucide="check-circle"></i></div>
       <span>签到</span>
     </div>
     <div class="quick-action" onclick="switchTab(2)">
-      <div class="icon-wrap"><i class="semi-icon semi-icon-gift"></i></div>
+      <div class="icon-wrap"><i data-lucide="gift"></i></div>
       <span>积分</span>
     </div>
     <div class="quick-action" onclick="switchTab(2)">
-      <div class="icon-wrap"><i class="semi-icon semi-icon-ticket"></i></div>
+      <div class="icon-wrap"><i data-lucide="ticket"></i></div>
       <span>优惠券</span>
     </div>
     <div class="quick-action" onclick="switchTab(0)">
-      <div class="icon-wrap"><i class="semi-icon semi-icon-calendar"></i></div>
+      <div class="icon-wrap"><i data-lucide="calendar"></i></div>
       <span>活动</span>
     </div>
   </div>
@@ -409,11 +423,11 @@ body{
   <div class="section-title">热门商户</div>
   <div class="hot-merchants">
     <div class="merchant-card-h">
-      <div class="m-icon"><i class="semi-icon semi-icon-coffee"></i></div>
+      <div class="m-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:20px;height:20px;color:var(--primary-light)"><path d="M17 8h1a4 4 0 110 8h-1"/><path d="M3 8h14v9a4 4 0 01-4 4H7a4 4 0 01-4-4V8z"/><line x1="6" y1="2" x2="6" y2="4"/><line x1="10" y1="2" x2="10" y2="4"/><line x1="14" y1="2" x2="14" y2="4"/></svg></div>
       <h4>星巴克</h4><p>会员9折</p>
     </div>
     <div class="merchant-card-h">
-      <div class="m-icon"><i class="semi-icon semi-icon-store"></i></div>
+      <div class="m-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:20px;height:20px;color:var(--primary-light)"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
       <h4>全家</h4><p>满30减5</p>
     </div>
     <div class="merchant-card-h">
@@ -421,7 +435,7 @@ body{
       <h4>比亚迪</h4><p>试驾礼</p>
     </div>
     <div class="merchant-card-h">
-      <div class="m-icon"><i class="semi-icon semi-icon-flame"></i></div>
+      <div class="m-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:20px;height:20px;color:var(--primary-light)"><path d="M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 11-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 002.5 2.5z"/></svg></div>
       <h4>老码头火锅</h4><p>会员88折</p>
     </div>
   </div>
@@ -446,7 +460,7 @@ body{
   <div class="merchants-header"><h2>商户</h2></div>
   <div class="search-wrap">
     <div class="search-bar">
-      <i class="semi-icon semi-icon-search"></i>
+      <i data-lucide="search"></i>
       <input placeholder="搜索商户名称" oninput="filterMerchants(this.value)">
     </div>
   </div>
@@ -490,7 +504,7 @@ body{
     </div>
     <div class="coupon-right">
       <div><h4>新人专享券</h4><p>全场通用 · 30天有效</p></div>
-      <div class="coupon-btn" onclick="claimCoupon(this)"><span class="btn-text">领取</span><span class="btn-check"><i class="semi-icon semi-icon-check_circle"></i></span></div>
+      <div class="coupon-btn" onclick="claimCoupon(this)"><span class="btn-text">领取</span><span class="btn-check"><i data-lucide="check-circle"></i></span></div>
     </div>
   </div>
   <div class="coupon-card scroll-reveal">
@@ -501,7 +515,7 @@ body{
     </div>
     <div class="coupon-right">
       <div><h4>星巴克专享券</h4><p>仅限星巴克 · 14天有效</p></div>
-      <div class="coupon-btn" onclick="claimCoupon(this)"><span class="btn-text">领取</span><span class="btn-check"><i class="semi-icon semi-icon-check_circle"></i></span></div>
+      <div class="coupon-btn" onclick="claimCoupon(this)"><span class="btn-text">领取</span><span class="btn-check"><i data-lucide="check-circle"></i></span></div>
     </div>
   </div>
   <div class="coupon-card scroll-reveal">
@@ -512,19 +526,19 @@ body{
     </div>
     <div class="coupon-right">
       <div><h4>会员日折扣</h4><p>每周三 · 全场通用</p></div>
-      <div class="coupon-btn" onclick="claimCoupon(this)"><span class="btn-text">领取</span><span class="btn-check"><i class="semi-icon semi-icon-check_circle"></i></span></div>
+      <div class="coupon-btn" onclick="claimCoupon(this)"><span class="btn-text">领取</span><span class="btn-check"><i data-lucide="check-circle"></i></span></div>
     </div>
   </div>
 
   <div class="points-mall scroll-reveal" style="margin-top:20px">
     <div class="points-mall-header">
       <h3>积分商城</h3>
-      <span>更多 <i class="semi-icon semi-icon-chevron_right" style="font-size:12px"></i></span>
+      <span>更多 <i data-lucide="chevron-right" style="width:12px;height:12px"></i></span>
     </div>
     <div class="points-items">
       <div class="points-item">
         <div class="item-badge">热</div>
-        <div class="pi-icon"><i class="semi-icon semi-icon-coffee"></i></div>
+        <div class="pi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:20px;height:20px;color:var(--primary-light)"><path d="M17 8h1a4 4 0 110 8h-1"/><path d="M3 8h14v9a4 4 0 01-4 4H7a4 4 0 01-4-4V8z"/><line x1="6" y1="2" x2="6" y2="4"/><line x1="10" y1="2" x2="10" y2="4"/><line x1="14" y1="2" x2="14" y2="4"/></svg></div>
         <span>咖啡兑换券</span><em>500积分</em>
       </div>
       <div class="points-item">
@@ -533,7 +547,7 @@ body{
       </div>
       <div class="points-item">
         <div class="item-badge">新</div>
-        <div class="pi-icon"><i class="semi-icon semi-icon-gift"></i></div>
+        <div class="pi-icon"><i data-lucide="gift"></i></div>
         <span>神秘礼盒</span><em>1200积分</em>
       </div>
     </div>
@@ -553,9 +567,9 @@ body{
 <!-- ==================== PROFILE ==================== -->
 <div class="page" id="page-profile">
   <div class="profile-header">
-    <div class="avatar"><i class="semi-icon semi-icon-user"></i></div>
+    <div class="avatar"><i data-lucide="user"></i></div>
     <h3>16 EASTERN PARK 会员</h3>
-    <div class="badge"><i class="semi-icon semi-icon-star" style="font-size:11px;margin-right:4px"></i>金卡会员</div>
+    <div class="badge"><i data-lucide="star" style="width:11px;height:11px;margin-right:4px"></i>金卡会员</div>
   </div>
 
   <div class="member-card" id="memberCard">
@@ -572,24 +586,24 @@ body{
 
   <div class="menu-list">
     <div class="menu-item" onclick="createRipple(event)">
-      <span class="menu-label"><i class="semi-icon semi-icon-file_text"></i> 我的订单</span>
-      <span class="arrow"><i class="semi-icon semi-icon-chevron_right"></i></span>
+      <span class="menu-label"><i data-lucide="file-text"></i> 我的订单</span>
+      <span class="arrow"><i data-lucide="chevron-right"></i></span>
     </div>
     <div class="menu-item" onclick="createRipple(event)">
-      <span class="menu-label"><i class="semi-icon semi-icon-ticket"></i> 我的优惠券</span>
-      <span class="arrow"><i class="semi-icon semi-icon-chevron_right"></i></span>
+      <span class="menu-label"><i data-lucide="ticket"></i> 我的优惠券</span>
+      <span class="arrow"><i data-lucide="chevron-right"></i></span>
     </div>
     <div class="menu-item" onclick="createRipple(event)">
-      <span class="menu-label"><i class="semi-icon semi-icon-star"></i> 收藏商户</span>
-      <span class="arrow"><i class="semi-icon semi-icon-chevron_right"></i></span>
+      <span class="menu-label"><i data-lucide="star"></i> 收藏商户</span>
+      <span class="arrow"><i data-lucide="chevron-right"></i></span>
     </div>
     <div class="menu-item" onclick="createRipple(event)">
       <span class="menu-label"><svg class="svg-icon" style="width:20px;height:20px;color:var(--primary-light)"><svg viewBox="0 0 24 24"><path d="M5 17h14M7 11l3-6h4l3 6M4 17a2 2 0 1 0 4 0M16 17a2 2 0 1 0 4 0"/></svg></svg> 停车缴费</span>
-      <span class="arrow"><i class="semi-icon semi-icon-chevron_right"></i></span>
+      <span class="arrow"><i data-lucide="chevron-right"></i></span>
     </div>
     <div class="menu-item" onclick="createRipple(event)">
-      <span class="menu-label"><i class="semi-icon semi-icon-setting"></i> 设置</span>
-      <span class="arrow"><i class="semi-icon semi-icon-chevron_right"></i></span>
+      <span class="menu-label"><i data-lucide="settings"></i> 设置</span>
+      <span class="arrow"><i data-lucide="chevron-right"></i></span>
     </div>
   </div>
 
@@ -603,19 +617,19 @@ body{
 <!-- TAB BAR -->
 <div class="tabbar">
   <div class="tab active" onclick="switchTab(0)">
-    <i class="semi-icon semi-icon-home tab-icon"></i>
+    <span class="tab-icon"><i data-lucide="home"></i></span>
     <span class="tab-label">首页</span>
   </div>
   <div class="tab" onclick="switchTab(1)">
-    <i class="semi-icon semi-icon-grid_view tab-icon"></i>
+    <span class="tab-icon"><i data-lucide="layout-grid"></i></span>
     <span class="tab-label">商户</span>
   </div>
   <div class="tab" onclick="switchTab(2)">
-    <i class="semi-icon semi-icon-layers tab-icon"></i>
+    <span class="tab-icon"><i data-lucide="layers"></i></span>
     <span class="tab-label">权益</span>
   </div>
   <div class="tab" onclick="switchTab(3)">
-    <i class="semi-icon semi-icon-user tab-icon"></i>
+    <span class="tab-icon"><i data-lucide="user"></i></span>
     <span class="tab-label">我的</span>
   </div>
 </div>
@@ -648,7 +662,7 @@ function switchTab(i){
     if(fill)fill.style.width='64%';
   },100);
   if(i===3)animateCounters();
-  setTimeout(initScrollReveal,100);
+  setTimeout(()=>{initScrollReveal();if(window.lucide)lucide.createIcons();},100);
 }
 
 // ===== BANNER =====
@@ -698,21 +712,26 @@ let currentCat='全部';
 function renderStars(rating){
   const full=Math.floor(rating);const half=rating%1>=0.5;
   let html='';
-  for(let i=0;i<full;i++)html+='<i class="semi-icon semi-icon-star" style="color:var(--warning)"></i>';
-  if(half)html+='<i class="semi-icon semi-icon-star" style="color:var(--warning);opacity:.5"></i>';
+  for(let i=0;i<full;i++)html+='<i data-lucide="star" style="width:11px;height:11px;color:var(--warning)"></i>';
+  if(half)html+='<i data-lucide="star" style="width:11px;height:11px;color:var(--warning);opacity:.5"></i>';
   return html;
 }
 
 function getIconHTML(m){
   if(m.icon==='car')return '<svg class="svg-icon" style="width:24px;height:24px;color:var(--primary-light)"><svg viewBox="0 0 24 24"><path d="M5 17h14M7 11l3-6h4l3 6M4 17a2 2 0 1 0 4 0M16 17a2 2 0 1 0 4 0"/></svg></svg>';
-  return `<i class="semi-icon semi-icon-${m.icon}"></i>`;
+  const iconMap={coffee:'coffee',store:'store',flame:'flame'};
+  if(m.icon==='coffee')return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:24px;height:24px;color:var(--primary-light)"><path d="M17 8h1a4 4 0 110 8h-1"/><path d="M3 8h14v9a4 4 0 01-4 4H7a4 4 0 01-4-4V8z"/><line x1="6" y1="2" x2="6" y2="4"/><line x1="10" y1="2" x2="10" y2="4"/><line x1="14" y1="2" x2="14" y2="4"/></svg>';
+  if(m.icon==='store')return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:24px;height:24px;color:var(--primary-light)"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>';
+  if(m.icon==='flame')return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:24px;height:24px;color:var(--primary-light)"><path d="M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 11-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 002.5 2.5z"/></svg>';
+  return `<i data-lucide="${m.icon}"></i>`;
 }
 
 function renderMerchants(q=''){
   const list=document.getElementById('merchantList');
   const filtered=merchants.filter(m=>(currentCat==='全部'||m.cat===currentCat)&&(!q||m.name.includes(q)));
   if(!filtered.length){
-    list.innerHTML='<div class="empty-state"><i class="semi-icon semi-icon-search"></i><p>没有找到相关商户</p></div>';
+    list.innerHTML='<div class="empty-state"><i data-lucide="search"></i><p>没有找到相关商户</p></div>';
+    if(window.lucide)lucide.createIcons();
     return;
   }
   list.innerHTML=filtered.map(m=>`
@@ -728,7 +747,7 @@ function renderMerchants(q=''){
         <span class="rating-num">${m.rating}</span>
       </div>
     </div>`).join('');
-  setTimeout(initScrollReveal,50);
+  setTimeout(()=>{initScrollReveal();if(window.lucide)lucide.createIcons();},50);
 }
 
 function filterCat(el,cat){
@@ -756,9 +775,10 @@ function checkin(){showToast('签到成功','+10 积分已到账')}
 // ===== TOAST =====
 function showToast(title,sub){
   const t=document.getElementById('toast');
-  t.innerHTML=`<div class="check"><i class="semi-icon semi-icon-check_circle"></i></div>
+  t.innerHTML=`<div class="check"><i data-lucide="check-circle"></i></div>
     <div style="font-size:15px;font-weight:600;letter-spacing:.3px">${title}</div>
     <div style="font-size:12px;color:var(--text-secondary);margin-top:5px">${sub}</div>`;
+  if(window.lucide)lucide.createIcons();
   t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'),1800);
 }
@@ -819,6 +839,7 @@ function initScrollReveal(){
 
 // ===== INIT =====
 document.addEventListener('DOMContentLoaded',()=>{
+  if(window.lucide)lucide.createIcons();
   renderMerchants();
   initScrollReveal();
   // Animate points bar on benefits page if active
