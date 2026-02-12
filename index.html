@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>16 EASTERN PARK</title>
+<style>
+:root{
+--bg:#0a1a18;--card:#0f2824;--card-border:#1a3d36;--primary:#0D6B5E;--primary-light:#10927f;
+--primary-dark:#0A4F46;--primary-darker:#083D36;--text:#e8f0ee;--text-secondary:#8aaba5;
+--glow:rgba(13,107,94,.25);--radius:14px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro','PingFang SC',sans-serif;background:var(--bg);color:var(--text);max-width:430px;margin:0 auto;min-height:100vh;overflow-x:hidden;position:relative}
+body::before{content:'';position:fixed;top:-40%;left:-20%;width:80%;height:80%;background:radial-gradient(ellipse,rgba(13,107,94,.08) 0%,transparent 70%);pointer-events:none;z-index:0}
+body::after{content:'';position:fixed;bottom:-30%;right:-30%;width:70%;height:70%;background:radial-gradient(ellipse,rgba(13,107,94,.06) 0%,transparent 70%);pointer-events:none;z-index:0}
+
+.page{display:none;padding:0 0 80px;position:relative;z-index:1;animation:fadeIn .3s}
+.page.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* Tab Bar */
+.tabbar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:rgba(8,20,18,.95);backdrop-filter:blur(20px);border-top:1px solid var(--card-border);display:flex;z-index:100;padding-bottom:env(safe-area-inset-bottom)}
+.tabbar .tab{flex:1;text-align:center;padding:10px 0 6px;cursor:pointer;transition:.2s}
+.tabbar .tab svg{width:24px;height:24px;stroke:var(--text-secondary);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;transition:.2s}
+.tabbar .tab span{display:block;font-size:10px;color:var(--text-secondary);margin-top:3px;transition:.2s}
+.tabbar .tab.active svg{stroke:var(--primary-light)}
+.tabbar .tab.active span{color:var(--primary-light)}
+.tabbar .tab.active{position:relative}
+.tabbar .tab.active::before{content:'';position:absolute;top:0;left:30%;right:30%;height:2px;background:var(--primary-light);border-radius:0 0 2px 2px}
+
+/* Shared */
+.section-title{font-size:15px;font-weight:600;padding:20px 20px 12px;letter-spacing:.5px}
+.card{background:var(--card);border:1px solid var(--card-border);border-radius:var(--radius);overflow:hidden}
+
+/* ===== HOME ===== */
+.home-header{display:flex;justify-content:space-between;align-items:center;padding:16px 20px 8px}
+.home-header h1{font-size:16px;font-weight:700;letter-spacing:2px}
+.home-header svg{width:22px;height:22px;stroke:var(--text-secondary);fill:none;stroke-width:1.5;cursor:pointer}
+
+.banner{margin:12px 16px;border-radius:var(--radius);padding:28px 24px;position:relative;overflow:hidden;
+background:linear-gradient(135deg,#083D36 0%,#0A4F46 40%,#0D6B5E 100%)}
+.banner::before{content:'';position:absolute;top:-50%;right:-30%;width:200px;height:200px;background:radial-gradient(circle,rgba(16,146,127,.4),transparent 70%);border-radius:50%}
+.banner::after{content:'';position:absolute;bottom:-20%;left:10%;width:160px;height:80px;background:radial-gradient(ellipse,rgba(16,146,127,.2),transparent 70%)}
+.banner-tag{display:inline-block;font-size:10px;padding:3px 10px;border:1px solid rgba(255,255,255,.25);border-radius:20px;color:rgba(255,255,255,.8);margin-bottom:12px;position:relative;z-index:1}
+.banner h2{font-size:22px;font-weight:700;position:relative;z-index:1;line-height:1.4}
+.banner p{font-size:12px;color:rgba(255,255,255,.6);margin-top:8px;position:relative;z-index:1}
+
+.quick-actions{display:grid;grid-template-columns:repeat(4,1fr);gap:0;padding:20px 16px}
+.quick-action{text-align:center;cursor:pointer}
+.quick-action .icon-wrap{width:48px;height:48px;margin:0 auto 8px;border-radius:14px;background:rgba(13,107,94,.12);border:1px solid rgba(13,107,94,.2);display:flex;align-items:center;justify-content:center;transition:.2s}
+.quick-action:active .icon-wrap{transform:scale(.92);background:rgba(13,107,94,.2)}
+.quick-action svg{width:22px;height:22px;stroke:var(--primary-light);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.quick-action span{font-size:12px;color:var(--text-secondary)}
+
+.hot-merchants{padding:0 0 0 16px;overflow-x:auto;display:flex;gap:12px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.hot-merchants::-webkit-scrollbar{display:none}
+.merchant-card-h{min-width:150px;background:var(--card);border:1px solid var(--card-border);border-radius:var(--radius);padding:16px;flex-shrink:0}
+.merchant-card-h:last-child{margin-right:16px}
+.merchant-card-h .m-icon{width:40px;height:40px;border-radius:10px;background:rgba(13,107,94,.15);display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:10px}
+.merchant-card-h h4{font-size:13px;font-weight:600;margin-bottom:4px}
+.merchant-card-h p{font-size:11px;color:var(--primary-light)}
+
+.activity-item{margin:0 16px 10px;padding:16px;background:var(--card);border:1px solid var(--card-border);border-radius:var(--radius);display:flex;gap:14px;align-items:center}
+.activity-dot{width:8px;height:8px;border-radius:50%;background:var(--primary-light);flex-shrink:0;box-shadow:0 0 8px var(--glow)}
+.activity-item h4{font-size:13px;font-weight:500}
+.activity-item p{font-size:11px;color:var(--text-secondary);margin-top:3px}
+
+/* ===== MERCHANTS ===== */
+.search-wrap{padding:16px 16px 0}
+.search-bar{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--card-border);border-radius:10px;padding:10px 14px;transition:.2s}
+.search-bar:focus-within{border-color:var(--primary)}
+.search-bar svg{width:18px;height:18px;stroke:var(--text-secondary);fill:none;stroke-width:1.5;flex-shrink:0}
+.search-bar input{background:none;border:none;outline:none;color:var(--text);font-size:14px;width:100%}
+.search-bar input::placeholder{color:var(--text-secondary)}
+
+.cat-pills{display:flex;gap:8px;padding:14px 16px;overflow-x:auto;scrollbar-width:none}
+.cat-pills::-webkit-scrollbar{display:none}
+.cat-pill{padding:6px 16px;border-radius:20px;font-size:13px;white-space:nowrap;cursor:pointer;transition:.2s;
+background:var(--card);border:1px solid var(--card-border);color:var(--text-secondary)}
+.cat-pill.active{background:var(--primary);border-color:var(--primary);color:#fff}
+
+.merchant-list{padding:0 16px}
+.merchant-item{background:var(--card);border:1px solid var(--card-border);border-radius:var(--radius);padding:16px;margin-bottom:10px;display:flex;gap:14px;align-items:center}
+.merchant-avatar{width:50px;height:50px;border-radius:12px;background:rgba(13,107,94,.15);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.merchant-info{flex:1}
+.merchant-info h4{font-size:14px;font-weight:600;margin-bottom:4px}
+.merchant-info .m-cat{display:inline-block;font-size:10px;padding:2px 8px;border-radius:4px;background:rgba(13,107,94,.15);color:var(--primary-light);margin-bottom:4px}
+.merchant-info .m-desc{font-size:12px;color:var(--text-secondary)}
+.merchant-rating{font-size:13px;font-weight:600;color:var(--primary-light)}
+
+/* ===== BENEFITS ===== */
+.benefits-header{padding:24px 20px 4px;text-align:center}
+.benefits-header h2{font-size:18px;font-weight:700;letter-spacing:1px}
+.benefits-header p{font-size:12px;color:var(--text-secondary);margin-top:6px}
+
+.coupon-card{margin:10px 16px;background:var(--card);border:1px solid var(--card-border);border-radius:var(--radius);display:flex;overflow:hidden;position:relative}
+.coupon-left{padding:16px 20px;display:flex;flex-direction:column;justify-content:center;align-items:center;min-width:90px;
+background:linear-gradient(135deg,var(--primary-dark),var(--primary))}
+.coupon-left .amount{font-size:28px;font-weight:700;line-height:1}
+.coupon-left .unit{font-size:11px;margin-top:2px;opacity:.8}
+.coupon-right{flex:1;padding:14px 16px;display:flex;align-items:center;justify-content:space-between}
+.coupon-right h4{font-size:14px;font-weight:600;margin-bottom:4px}
+.coupon-right p{font-size:11px;color:var(--text-secondary)}
+.coupon-btn{padding:6px 14px;border-radius:20px;font-size:12px;cursor:pointer;transition:.2s;
+background:rgba(13,107,94,.15);border:1px solid var(--primary);color:var(--primary-light);white-space:nowrap}
+.coupon-btn:active{background:var(--primary);color:#fff}
+.coupon-btn.claimed{background:transparent;border-color:var(--card-border);color:var(--text-secondary);pointer-events:none}
+
+.points-mall{margin:10px 16px;padding:20px;background:var(--card);border:1px solid var(--card-border);border-radius:var(--radius)}
+.points-mall h3{font-size:15px;font-weight:600;margin-bottom:12px}
+.points-items{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.points-item{text-align:center;padding:12px 4px;border-radius:10px;background:rgba(13,107,94,.08);border:1px solid rgba(13,107,94,.12)}
+.points-item .pi-icon{font-size:24px;margin-bottom:6px}
+.points-item span{font-size:11px;display:block;color:var(--text-secondary)}
+.points-item em{font-size:11px;color:var(--primary-light);font-style:normal;margin-top:2px;display:block}
+
+/* ===== PROFILE ===== */
+.profile-header{padding:32px 20px 24px;text-align:center;position:relative;
+background:linear-gradient(180deg,#0A4F46 0%,var(--bg) 100%)}
+.profile-header::before{content:'';position:absolute;top:0;left:20%;width:60%;height:100%;background:radial-gradient(ellipse at top,rgba(16,146,127,.15),transparent 80%)}
+.avatar{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--primary-light));margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-size:24px;position:relative;z-index:1}
+.profile-header h3{font-size:16px;font-weight:700;position:relative;z-index:1}
+.profile-header .badge{display:inline-block;font-size:11px;padding:3px 12px;border-radius:20px;margin-top:8px;
+background:rgba(13,107,94,.2);border:1px solid var(--primary);color:var(--primary-light);position:relative;z-index:1}
+
+.member-card{margin:0 16px 16px;padding:20px;background:var(--card);border:1px solid var(--card-border);border-radius:var(--radius)}
+.barcode{height:40px;background:repeating-linear-gradient(90deg,var(--text) 0px,var(--text) 2px,transparent 2px,transparent 4px,var(--text) 4px,var(--text) 5px,transparent 5px,transparent 8px,var(--text) 8px,var(--text) 9px,transparent 9px,transparent 12px);opacity:.3;border-radius:4px;margin-bottom:8px}
+.barcode-num{text-align:center;font-size:12px;color:var(--text-secondary);letter-spacing:3px;font-family:monospace}
+
+.stats{display:flex;margin:0 16px 16px;gap:8px}
+.stat{flex:1;text-align:center;padding:16px 8px;background:var(--card);border:1px solid var(--card-border);border-radius:var(--radius)}
+.stat .val{font-size:18px;font-weight:700;color:var(--primary-light)}
+.stat .label{font-size:11px;color:var(--text-secondary);margin-top:4px}
+
+.menu-list{margin:0 16px}
+.menu-item{display:flex;align-items:center;justify-content:space-between;padding:16px;background:var(--card);border:1px solid var(--card-border);border-bottom:none;cursor:pointer;transition:.1s}
+.menu-item:first-child{border-radius:var(--radius) var(--radius) 0 0}
+.menu-item:last-child{border-bottom:1px solid var(--card-border);border-radius:0 0 var(--radius) var(--radius)}
+.menu-item:active{background:rgba(13,107,94,.08)}
+.menu-item span{font-size:14px}
+.menu-item .arrow{color:var(--text-secondary);font-size:14px}
+
+/* Toast */
+.toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(.9);background:rgba(10,31,28,.95);border:1px solid var(--primary);
+color:var(--text);padding:20px 32px;border-radius:14px;text-align:center;z-index:200;opacity:0;pointer-events:none;transition:.3s;backdrop-filter:blur(10px)}
+.toast.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.toast .check{font-size:32px;margin-bottom:8px;display:block}
+</style>
+</head>
+<body>
+
+<!-- HOME -->
+<div class="page active" id="page-home">
+  <div class="home-header">
+    <h1>16 EASTERN PARK</h1>
+    <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+  </div>
+
+  <div class="banner">
+    <div class="banner-tag">限时活动</div>
+    <h2>新春会员季<br>双倍积分周</h2>
+    <p>2026.02.08 — 02.22 · 全场商户参与</p>
+  </div>
+
+  <div class="quick-actions">
+    <div class="quick-action" onclick="checkin()">
+      <div class="icon-wrap"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></div>
+      <span>签到</span>
+    </div>
+    <div class="quick-action" onclick="switchTab(2)">
+      <div class="icon-wrap"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
+      <span>积分</span>
+    </div>
+    <div class="quick-action" onclick="switchTab(2)">
+      <div class="icon-wrap"><svg viewBox="0 0 24 24"><path d="M20 12v6a2 2 0 01-2 2H6a2 2 0 01-2-2v-6"/><polyline points="12 3 12 15"/><polyline points="8 7 12 3 16 7"/></svg></div>
+      <span>优惠券</span>
+    </div>
+    <div class="quick-action" onclick="switchTab(0)">
+      <div class="icon-wrap"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+      <span>活动</span>
+    </div>
+  </div>
+
+  <div class="section-title">热门商户</div>
+  <div class="hot-merchants">
+    <div class="merchant-card-h"><div class="m-icon">☕</div><h4>星巴克</h4><p>会员9折</p></div>
+    <div class="merchant-card-h"><div class="m-icon">🏪</div><h4>全家</h4><p>满30减5</p></div>
+    <div class="merchant-card-h"><div class="m-icon">🚗</div><h4>比亚迪</h4><p>试驾礼</p></div>
+    <div class="merchant-card-h"><div class="m-icon">🍲</div><h4>老码头火锅</h4><p>会员88折</p></div>
+  </div>
+
+  <div class="section-title">最新活动</div>
+  <div class="activity-item"><div class="activity-dot"></div><div><h4>艺术市集 · 春日限定</h4><p>02/15 — 本周六 10:00-18:00</p></div></div>
+  <div class="activity-item"><div class="activity-dot"></div><div><h4>会员专属品鉴会</h4><p>02/20 — 星巴克臻选门店</p></div></div>
+  <div class="activity-item"><div class="activity-dot"></div><div><h4>比亚迪新能源试驾日</h4><p>02/22 — B1停车场</p></div></div>
+</div>
+
+<!-- MERCHANTS -->
+<div class="page" id="page-merchants">
+  <div style="padding:16px 20px 0"><h2 style="font-size:18px;font-weight:700">商户</h2></div>
+  <div class="search-wrap">
+    <div class="search-bar">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input placeholder="搜索商户" oninput="filterMerchants(this.value)">
+    </div>
+  </div>
+  <div class="cat-pills" id="catPills">
+    <div class="cat-pill active" onclick="filterCat(this,'全部')">全部</div>
+    <div class="cat-pill" onclick="filterCat(this,'餐饮')">餐饮</div>
+    <div class="cat-pill" onclick="filterCat(this,'零售')">零售</div>
+    <div class="cat-pill" onclick="filterCat(this,'服务')">服务</div>
+    <div class="cat-pill" onclick="filterCat(this,'汽车')">汽车</div>
+  </div>
+  <div class="merchant-list" id="merchantList"></div>
+</div>
+
+<!-- BENEFITS -->
+<div class="page" id="page-benefits">
+  <div class="benefits-header">
+    <h2>会员权益中心</h2>
+    <p>艺术·生长·共生·社群</p>
+  </div>
+
+  <div class="section-title">专属优惠券</div>
+  <div class="coupon-card"><div class="coupon-left"><span class="amount">¥20</span><span class="unit">满100可用</span></div><div class="coupon-right"><div><h4>新人专享券</h4><p>全场通用 · 30天有效</p></div><div class="coupon-btn" onclick="claimCoupon(this)">领取</div></div></div>
+  <div class="coupon-card"><div class="coupon-left"><span class="amount">¥10</span><span class="unit">无门槛</span></div><div class="coupon-right"><div><h4>星巴克专享券</h4><p>仅限星巴克 · 14天有效</p></div><div class="coupon-btn" onclick="claimCoupon(this)">领取</div></div></div>
+  <div class="coupon-card"><div class="coupon-left"><span class="amount">9折</span><span class="unit">会员日</span></div><div class="coupon-right"><div><h4>会员日折扣</h4><p>每周三 · 全场通用</p></div><div class="coupon-btn" onclick="claimCoupon(this)">领取</div></div></div>
+
+  <div class="points-mall" style="margin-top:20px">
+    <h3>积分商城</h3>
+    <div class="points-items">
+      <div class="points-item"><div class="pi-icon">☕</div><span>咖啡兑换券</span><em>500积分</em></div>
+      <div class="points-item"><div class="pi-icon">🎬</div><span>电影票</span><em>800积分</em></div>
+      <div class="points-item"><div class="pi-icon">🎁</div><span>神秘礼盒</span><em>1200积分</em></div>
+    </div>
+  </div>
+
+  <div class="section-title">会员活动</div>
+  <div class="activity-item"><div class="activity-dot"></div><div><h4>春日积分翻倍</h4><p>消费即享双倍积分</p></div></div>
+  <div class="activity-item"><div class="activity-dot"></div><div><h4>推荐好友得100积分</h4><p>邀请新会员注册</p></div></div>
+</div>
+
+<!-- PROFILE -->
+<div class="page" id="page-profile">
+  <div class="profile-header">
+    <div class="avatar">👤</div>
+    <h3>16 EASTERN PARK 会员</h3>
+    <div class="badge">✦ 金卡会员</div>
+  </div>
+  <div class="member-card">
+    <div class="barcode"></div>
+    <div class="barcode-num">6280 1688 0526 2026</div>
+  </div>
+  <div class="stats">
+    <div class="stat"><div class="val">1,280</div><div class="label">积分</div></div>
+    <div class="stat"><div class="val">3</div><div class="label">优惠券</div></div>
+    <div class="stat"><div class="val">Lv.5</div><div class="label">等级</div></div>
+  </div>
+  <div class="menu-list">
+    <div class="menu-item"><span>📋 我的订单</span><span class="arrow">›</span></div>
+    <div class="menu-item"><span>🎫 我的优惠券</span><span class="arrow">›</span></div>
+    <div class="menu-item"><span>⭐ 收藏商户</span><span class="arrow">›</span></div>
+    <div class="menu-item"><span>📍 停车缴费</span><span class="arrow">›</span></div>
+    <div class="menu-item"><span>⚙️ 设置</span><span class="arrow">›</span></div>
+  </div>
+  <p style="text-align:center;font-size:11px;color:var(--text-secondary);margin-top:24px">生长在艺术中心的街区商业</p>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- TAB BAR -->
+<div class="tabbar">
+  <div class="tab active" onclick="switchTab(0)">
+    <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    <span>首页</span>
+  </div>
+  <div class="tab" onclick="switchTab(1)">
+    <svg viewBox="0 0 24 24"><path d="M3 3h18v18H3z" fill="none"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></svg>
+    <span>商户</span>
+  </div>
+  <div class="tab" onclick="switchTab(2)">
+    <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+    <span>权益</span>
+  </div>
+  <div class="tab" onclick="switchTab(3)">
+    <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    <span>我的</span>
+  </div>
+</div>
+
+<script>
+const pages=['page-home','page-merchants','page-benefits','page-profile'];
+const tabs=document.querySelectorAll('.tabbar .tab');
+
+function switchTab(i){
+  pages.forEach((p,idx)=>{
+    document.getElementById(p).classList.toggle('active',idx===i);
+    tabs[idx].classList.toggle('active',idx===i);
+  });
+  window.scrollTo(0,0);
+  if(i===1)renderMerchants();
+}
+
+// Merchants
+const merchants=[
+  {name:'星巴克咖啡',cat:'餐饮',icon:'☕',rating:4.8,desc:'臻选门店·会员9折'},
+  {name:'全家便利店',cat:'零售',icon:'🏪',rating:4.5,desc:'24H营业·满30减5'},
+  {name:'比亚迪汽车',cat:'汽车',icon:'🚗',rating:4.9,desc:'新能源体验中心·试驾礼'},
+  {name:'老码头火锅',cat:'餐饮',icon:'🍲',rating:4.7,desc:'地道重庆味·会员88折'}
+];
+let currentCat='全部';
+
+function renderMerchants(q=''){
+  const list=document.getElementById('merchantList');
+  const filtered=merchants.filter(m=>(currentCat==='全部'||m.cat===currentCat)&&(!q||m.name.includes(q)));
+  list.innerHTML=filtered.map(m=>`
+    <div class="merchant-item">
+      <div class="merchant-avatar">${m.icon}</div>
+      <div class="merchant-info">
+        <span class="m-cat">${m.cat}</span>
+        <h4>${m.name}</h4>
+        <span class="m-desc">${m.desc}</span>
+      </div>
+      <div class="merchant-rating">★ ${m.rating}</div>
+    </div>`).join('');
+}
+
+function filterCat(el,cat){
+  currentCat=cat;
+  document.querySelectorAll('.cat-pill').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  renderMerchants(document.querySelector('.search-bar input')?.value||'');
+}
+function filterMerchants(q){renderMerchants(q)}
+
+// Check-in
+function checkin(){showToast('✓','签到成功','+10 积分已到账')}
+
+// Coupon
+function claimCoupon(btn){
+  if(btn.classList.contains('claimed'))return;
+  btn.classList.add('claimed');btn.textContent='已领取';
+  showToast('🎫','领取成功','优惠券已放入卡包');
+}
+
+// Toast
+function showToast(icon,title,sub){
+  const t=document.getElementById('toast');
+  t.innerHTML=`<span class="check">${icon}</span><div style="font-size:15px;font-weight:600">${title}</div><div style="font-size:12px;color:var(--text-secondary);margin-top:4px">${sub}</div>`;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),1800);
+}
+
+renderMerchants();
+</script>
+</body>
+</html>
