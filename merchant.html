@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>星巴克（东韵里店）商户后台 - 16 EASTERN PARK</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.10/dayjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/antd@5.12.8/dist/antd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.23.6/babel.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.344.0/dist/umd/lucide.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/antd@5.12.8/dist/reset.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--brand:#0D6B5E;--dark:#0A1A18;--sidebar-w:220px}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;background:#f0f2f5}
+.layout{display:flex;min-height:100vh;flex-direction:column}
+.header{height:56px;background:var(--dark);display:flex;align-items:center;justify-content:space-between;padding:0 24px;color:#fff;position:fixed;top:0;left:0;right:0;z-index:100}
+.header-left{display:flex;align-items:center;gap:12px;font-size:16px;font-weight:600}
+.header-logo{width:32px;height:32px;background:var(--brand);border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:#fff}
+.header-right{display:flex;align-items:center;gap:16px;font-size:14px}
+.header-right .merchant-name{color:rgba(255,255,255,.85)}
+.body-wrap{display:flex;margin-top:56px;min-height:calc(100vh - 56px)}
+.sidebar{width:var(--sidebar-w);background:#001529;position:fixed;top:56px;left:0;bottom:0;overflow-y:auto;z-index:50}
+.sidebar .menu-item{display:flex;align-items:center;gap:10px;padding:12px 24px;color:rgba(255,255,255,.65);cursor:pointer;font-size:14px;transition:all .2s;border-left:3px solid transparent}
+.sidebar .menu-item:hover{color:#fff;background:rgba(255,255,255,.06)}
+.sidebar .menu-item.active{color:#fff;background:rgba(13,107,94,.3);border-left-color:var(--brand)}
+.sidebar .menu-item svg{width:18px;height:18px;flex-shrink:0}
+.main{margin-left:var(--sidebar-w);flex:1;padding:24px;min-height:calc(100vh - 56px)}
+.page-title{font-size:20px;font-weight:600;margin-bottom:20px;color:#1a1a1a}
+.stat-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+.stat-card{background:#fff;border-radius:8px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.stat-card .label{font-size:13px;color:#888;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.stat-card .value{font-size:28px;font-weight:700;color:#1a1a1a}
+.stat-card .sub{font-size:12px;color:var(--brand);margin-top:4px}
+.card{background:#fff;border-radius:8px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,.08);margin-bottom:20px}
+.card-title{font-size:16px;font-weight:600;margin-bottom:16px;color:#1a1a1a}
+.chart-bar-wrap{display:flex;align-items:flex-end;gap:8px;height:120px;padding-top:10px}
+.chart-bar{flex:1;background:var(--brand);border-radius:4px 4px 0 0;min-width:20px;position:relative;transition:height .3s}
+.chart-bar:hover{opacity:.8}
+.chart-bar .bar-label{position:absolute;bottom:-22px;left:50%;transform:translateX(-50%);font-size:11px;color:#888;white-space:nowrap}
+.chart-bar .bar-value{position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:11px;color:#555;white-space:nowrap}
+.badge-active{background:#e6fffb;color:var(--brand);border:1px solid #b5f5ec;padding:2px 8px;border-radius:4px;font-size:12px}
+.badge-inactive{background:#fff1f0;color:#ff4d4f;border:1px solid #ffa39e;padding:2px 8px;border-radius:4px;font-size:12px}
+.badge-pending{background:#fff7e6;color:#fa8c16;border:1px solid #ffd591;padding:2px 8px;border-radius:4px;font-size:12px}
+.pie-legend{display:flex;flex-wrap:wrap;gap:16px;margin-top:12px}
+.pie-legend-item{display:flex;align-items:center;gap:6px;font-size:13px;color:#555}
+.pie-legend-item .dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
+.pie-chart-mock{width:140px;height:140px;border-radius:50%;position:relative;flex-shrink:0}
+.pie-wrap{display:flex;align-items:center;gap:32px}
+.time-dist{display:flex;align-items:flex-end;gap:4px;height:80px;margin-top:12px}
+.time-bar{flex:1;background:var(--brand);border-radius:2px 2px 0 0;opacity:.7;position:relative;min-width:12px}
+.time-bar:hover{opacity:1}
+.time-bar .t-label{position:absolute;bottom:-18px;left:50%;transform:translateX(-50%);font-size:10px;color:#999;white-space:nowrap}
+.stars{color:#faad14;font-size:14px;letter-spacing:1px}
+.img-placeholder{width:120px;height:120px;background:linear-gradient(135deg,var(--brand),#0a8a6f);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px}
+.img-placeholder-wide{width:100%;height:160px;background:linear-gradient(135deg,#0A1A18,var(--brand));border-radius:8px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.6);font-size:14px;margin-bottom:16px}
+.ant-table-wrapper{margin-top:0!important}
+.scan-btn{display:flex;align-items:center;gap:8px;padding:16px 32px;background:var(--brand);color:#fff;border:none;border-radius:8px;font-size:16px;cursor:pointer;margin:20px 0;transition:opacity .2s}
+.scan-btn:hover{opacity:.85}
+.scan-btn svg{width:24px;height:24px}
+.filter-bar{display:flex;gap:12px;margin-bottom:16px;align-items:center;flex-wrap:wrap}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useRef, useCallback } = React;
+const { Table, Button, Modal, Form, Input, Select, DatePicker, Tag, Rate, message, Pagination, Tabs, InputNumber, Radio, Tooltip, Popconfirm } = antd;
+
+// Lucide icon helper
+function LIcon({ name, size = 18, color, style = {} }) {
+  const ref = useRef(null);
+  useEffect(() => {
+    if (ref.current && lucide.icons[name]) {
+      const [tag, attrs, children] = lucide.icons[name];
+      const svg = document.createElementNS('http://www.w3.org/2000/svg', tag);
+      Object.entries(attrs).forEach(([k,v]) => svg.setAttribute(k, v));
+      if (size) { svg.setAttribute('width', size); svg.setAttribute('height', size); }
+      if (color) svg.setAttribute('stroke', color);
+      children.forEach(([ct, ca]) => {
+        const el = document.createElementNS('http://www.w3.org/2000/svg', ct);
+        Object.entries(ca).forEach(([k,v]) => el.setAttribute(k, v));
+        svg.appendChild(el);
+      });
+      ref.current.innerHTML = '';
+      ref.current.appendChild(svg);
+    }
+  }, [name, size, color]);
+  return <span ref={ref} style={{ display: 'inline-flex', alignItems: 'center', ...style }} />;
+}
+
+// Mock data generators
+const names = ['张三','李四','王五','赵六','钱七','孙八','周九','吴十','郑十一','冯十二','陈小雨','林晓峰','杨美琪','黄大伟','刘思琪','马丽华','朱文杰','何小兰','高志远','许梦瑶'];
+const couponNames = ['买一赠一咖啡券','第二杯半价','满30减5元','新品尝鲜券','生日专享券'];
+
+function genVerifyRecords(n) {
+  const records = [];
+  for (let i = 0; i < n; i++) {
+    const d = new Date(2026, 1, 13 - Math.floor(Math.random() * 7));
+    d.setHours(8 + Math.floor(Math.random() * 12), Math.floor(Math.random() * 60));
+    records.push({
+      key: i, id: 'V' + String(10000 + i),
+      coupon: couponNames[Math.floor(Math.random() * 3)],
+      user: names[i % names.length],
+      time: `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`,
+      amount: [0, 0, 5, 15, 25][Math.floor(Math.random() * 5)],
+      operator: ['店长小王','收银员小李','店员小张'][Math.floor(Math.random() * 3)]
+    });
+  }
+  return records.sort((a, b) => b.time.localeCompare(a.time));
+}
+
+function genReviews(n) {
+  const contents = [
+    '环境很好，咖啡也好喝，下次还来！','服务态度非常好，点赞','拿铁做得很棒，拉花也漂亮',
+    '位置有点难找，不过店内环境不错','等待时间有点长，希望能改善','价格偏贵，但品质确实不错',
+    '新品很惊艳，推荐尝试','空调温度刚好，适合办公','WiFi速度很快，适合远程办公',
+    '甜品种类可以再多一些','音乐氛围很好，很放松','店员很热情，推荐了很好的搭配',
+    '停车方便，商场里位置好找','杯子设计很好看，想收集','节日限定款很有创意'
+  ];
+  return Array.from({length: n}, (_, i) => ({
+    key: i, user: names[i % names.length],
+    rating: (35 + Math.floor(Math.random() * 16)) / 10,
+    content: contents[i % contents.length],
+    time: `2026-02-${String(13 - Math.floor(i / 3)).padStart(2, '0')} ${String(9 + i % 12).padStart(2, '0')}:${String(10 + i * 3 % 50).padStart(2, '0')}`,
+    replied: i % 4 === 0
+  }));
+}
+
+const verifyRecords = genVerifyRecords(20);
+const reviews = genReviews(15);
+const weekData = [
+  {day:'2/7',val:132},{day:'2/8',val:148},{day:'2/9',val:165},{day:'2/10',val:141},
+  {day:'2/11',val:158},{day:'2/12',val:172},{day:'2/13',val:156}
+];
+const maxVal = Math.max(...weekData.map(d=>d.val));
+
+// ============ PAGES ============
+
+function PageOverview() {
+  const stats = [
+    { label: '今日客流', value: '156', unit: '人', icon: 'users', color: '#0D6B5E' },
+    { label: '今日核销券', value: '23', unit: '张', icon: 'ticket', color: '#1890ff' },
+    { label: '今日积分消费', value: '4,500', unit: '分', icon: 'coins', color: '#fa8c16' },
+    { label: '今日营收', value: '¥4,680', unit: '', icon: 'trending-up', color: '#52c41a' },
+  ];
+  return <div>
+    <div className="page-title">店铺概览</div>
+    <div className="stat-cards">
+      {stats.map((s, i) => <div className="stat-card" key={i}>
+        <div className="label"><LIcon name={s.icon} size={16} color={s.color} /> {s.label}</div>
+        <div className="value">{s.value}<span style={{fontSize:14,color:'#888',marginLeft:4}}>{s.unit}</span></div>
+        <div className="sub">较昨日 +{3 + i * 2}%</div>
+      </div>)}
+    </div>
+    <div className="card">
+      <div className="card-title">近7天客流趋势</div>
+      <div className="chart-bar-wrap">
+        {weekData.map((d, i) => <div className="chart-bar" key={i} style={{height: `${(d.val / maxVal) * 100}%`}}>
+          <span className="bar-value">{d.val}</span>
+          <span className="bar-label">{d.day}</span>
+        </div>)}
+      </div>
+      <div style={{height:30}} />
+    </div>
+    <div className="card">
+      <div className="card-title">最近核销记录</div>
+      <Table dataSource={verifyRecords.slice(0, 5)} pagination={false} size="small" columns={[
+        {title:'券名',dataIndex:'coupon',key:'coupon'},
+        {title:'用户',dataIndex:'user',key:'user'},
+        {title:'核销时间',dataIndex:'time',key:'time'},
+        {title:'金额',dataIndex:'amount',key:'amount',render:v=>v?`¥${v}`:'—'},
+        {title:'操作员',dataIndex:'operator',key:'op'},
+      ]} />
+    </div>
+  </div>;
+}
+
+function PageVerify() {
+  const [page, setPage] = useState(1);
+  const [scanModal, setScanModal] = useState(false);
+  const pageSize = 10;
+  const data = verifyRecords.slice((page-1)*pageSize, page*pageSize);
+  return <div>
+    <div className="page-title">核销管理</div>
+    <div className="filter-bar">
+      <DatePicker.RangePicker style={{width:260}} />
+      <Input.Search placeholder="搜索用户/券名" style={{width:200}} />
+      <Button type="primary" style={{background:'var(--brand)',borderColor:'var(--brand)'}} onClick={()=>setScanModal(true)}>
+        <span style={{display:'flex',alignItems:'center',gap:6}}><LIcon name="scan-line" size={16} color="#fff" /> 扫码核销</span>
+      </Button>
+    </div>
+    <div className="card" style={{padding:0}}>
+      <Table dataSource={data} pagination={false} size="middle" columns={[
+        {title:'核销编号',dataIndex:'id',key:'id'},
+        {title:'券名',dataIndex:'coupon',key:'coupon'},
+        {title:'用户',dataIndex:'user',key:'user'},
+        {title:'核销时间',dataIndex:'time',key:'time',sorter:(a,b)=>a.time.localeCompare(b.time)},
+        {title:'核销金额',dataIndex:'amount',key:'amount',render:v=>v?`¥${v}`:'—'},
+        {title:'操作员',dataIndex:'operator',key:'op'},
+      ]} />
+      <div style={{display:'flex',justifyContent:'flex-end',padding:'12px 16px'}}>
+        <Pagination current={page} total={20} pageSize={pageSize} onChange={setPage} size="small" />
+      </div>
+    </div>
+    <Modal title="扫码核销" open={scanModal} onCancel={()=>setScanModal(false)} footer={null} width={400}>
+      <div style={{textAlign:'center',padding:'32px 0'}}>
+        <div style={{width:180,height:180,margin:'0 auto',border:'2px dashed var(--brand)',borderRadius:12,display:'flex',alignItems:'center',justifyContent:'center',flexDirection:'column',gap:8}}>
+          <LIcon name="scan-line" size={48} color="#0D6B5E" />
+          <span style={{color:'#888',fontSize:13}}>请扫描用户券码</span>
+        </div>
+        <Input placeholder="或手动输入券码" style={{marginTop:20,width:200}} />
+        <div><Button type="primary" style={{marginTop:12,background:'var(--brand)',borderColor:'var(--brand)'}} onClick={()=>{message.success('核销成功（模拟）');setScanModal(false)}}>确认核销</Button></div>
+      </div>
+    </Modal>
+  </div>;
+}
+
+function PageCoupon() {
+  const [createModal, setCreateModal] = useState(false);
+  const coupons = [
+    {key:1,name:'买一赠一咖啡券',type:'兑换券',face:'买一赠一',total:150,used:89,status:'active'},
+    {key:2,name:'第二杯半价',type:'折扣券',face:'5折',total:200,used:134,status:'active'},
+    {key:3,name:'满30减5元',type:'满减券',face:'¥5',total:300,used:178,status:'active'},
+    {key:4,name:'新品尝鲜券',type:'体验券',face:'免费',total:50,used:50,status:'inactive'},
+    {key:5,name:'生日专享8折券',type:'折扣券',face:'8折',total:100,used:23,status:'active'},
+  ];
+  return <div>
+    <div className="page-title">优惠券管理</div>
+    <div style={{marginBottom:16}}>
+      <Button type="primary" style={{background:'var(--brand)',borderColor:'var(--brand)'}} onClick={()=>setCreateModal(true)}>
+        <span style={{display:'flex',alignItems:'center',gap:6}}><LIcon name="plus" size={16} color="#fff" /> 申请创建优惠券</span>
+      </Button>
+    </div>
+    <div className="card" style={{padding:0}}>
+      <Table dataSource={coupons} pagination={false} size="middle" columns={[
+        {title:'名称',dataIndex:'name',key:'name',render:(t)=><span style={{fontWeight:500}}>{t}</span>},
+        {title:'类型',dataIndex:'type',key:'type',render:t=><Tag>{t}</Tag>},
+        {title:'面值',dataIndex:'face',key:'face'},
+        {title:'已发放',dataIndex:'total',key:'total'},
+        {title:'已核销',dataIndex:'used',key:'used'},
+        {title:'剩余',key:'remain',render:(_,r)=>r.total - r.used},
+        {title:'状态',dataIndex:'status',key:'status',render:s=>s==='active'?<span className="badge-active">进行中</span>:<span className="badge-inactive">已结束</span>},
+      ]} />
+    </div>
+    <Modal title="申请创建优惠券" open={createModal} onCancel={()=>setCreateModal(false)} onOk={()=>{message.success('申请已提交，等待平台审核');setCreateModal(false)}} okText="提交申请" cancelText="取消" okButtonProps={{style:{background:'var(--brand)',borderColor:'var(--brand)'}}}>
+      <Form layout="vertical" style={{marginTop:16}}>
+        <Form.Item label="优惠券名称"><Input placeholder="如：周末特惠8折券" /></Form.Item>
+        <Form.Item label="类型"><Select placeholder="请选择" options={[{label:'满减券',value:'mj'},{label:'折扣券',value:'zk'},{label:'兑换券',value:'dh'},{label:'体验券',value:'ty'}]} /></Form.Item>
+        <Form.Item label="面值/描述"><Input placeholder="如：¥10 / 8折 / 买一赠一" /></Form.Item>
+        <Form.Item label="发放数量"><InputNumber style={{width:'100%'}} min={1} placeholder="100" /></Form.Item>
+        <Form.Item label="有效期"><DatePicker.RangePicker style={{width:'100%'}} /></Form.Item>
+      </Form>
+    </Modal>
+  </div>;
+}
+
+function PageMember() {
+  const topMembers = names.slice(0,10).map((n,i)=>({key:i,name:n,visits:30-i*2,spend:`¥${(800-i*50).toFixed(0)}`,lastVisit:`2026-02-${String(13-i%5).padStart(2,'0')}`}));
+  const levels = [{name:'普通会员',pct:45,color:'#91d5ff'},{name:'银卡',pct:28,color:'#b7eb8f'},{name:'金卡',pct:18,color:'#ffd666'},{name:'黑金',pct:9,color:'#1a1a1a'}];
+  const timeSlots = [{t:'8-10',v:15},{t:'10-12',v:35},{t:'12-14',v:55},{t:'14-16',v:30},{t:'16-18',v:45},{t:'18-20',v:40},{t:'20-22',v:20}];
+  const maxT = Math.max(...timeSlots.map(s=>s.v));
+  return <div>
+    <div className="page-title">会员分析</div>
+    <div className="stat-cards" style={{gridTemplateColumns:'repeat(3,1fr)'}}>
+      <div className="stat-card"><div className="label"><LIcon name="users" size={16} color="#0D6B5E" /> 总到店会员</div><div className="value">1,283</div></div>
+      <div className="stat-card"><div className="label"><LIcon name="repeat" size={16} color="#1890ff" /> 回头客比例</div><div className="value">64.2%</div></div>
+      <div className="stat-card"><div className="label"><LIcon name="calendar" size={16} color="#fa8c16" /> 平均消费频次</div><div className="value">3.2<span style={{fontSize:14,color:'#888'}}> 次/月</span></div></div>
+    </div>
+    <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:20}}>
+      <div className="card">
+        <div className="card-title">会员等级分布</div>
+        <div className="pie-wrap">
+          <div className="pie-chart-mock" style={{background:`conic-gradient(${levels.map((l,i)=>`${l.color} ${levels.slice(0,i).reduce((s,x)=>s+x.pct,0)}% ${levels.slice(0,i+1).reduce((s,x)=>s+x.pct,0)}%`).join(', ')})`}} />
+          <div className="pie-legend" style={{flexDirection:'column'}}>
+            {levels.map((l,i)=><div className="pie-legend-item" key={i}><span className="dot" style={{background:l.color}}/>{l.name} {l.pct}%</div>)}
+          </div>
+        </div>
+      </div>
+      <div className="card">
+        <div className="card-title">消费时段分布</div>
+        <div className="time-dist">
+          {timeSlots.map((s,i)=><div className="time-bar" key={i} style={{height:`${(s.v/maxT)*100}%`}}><span className="t-label">{s.t}</span></div>)}
+        </div>
+        <div style={{height:24}} />
+      </div>
+    </div>
+    <div className="card">
+      <div className="card-title">高频会员 TOP10</div>
+      <Table dataSource={topMembers} pagination={false} size="small" columns={[
+        {title:'排名',key:'rank',render:(_,__,i)=><span style={{fontWeight:600,color:i<3?'var(--brand)':'#888'}}>{i+1}</span>},
+        {title:'会员',dataIndex:'name',key:'name'},
+        {title:'到店次数',dataIndex:'visits',key:'visits'},
+        {title:'累计消费',dataIndex:'spend',key:'spend'},
+        {title:'最近到店',dataIndex:'lastVisit',key:'last'},
+      ]} />
+    </div>
+  </div>;
+}
+
+function PageActivity() {
+  const platformActs = [
+    {key:1,name:'情人节双倍积分',time:'2026-02-14',status:'可报名',type:'平台'},
+    {key:2,name:'春季焕新消费节',time:'2026-03-01 ~ 03-15',status:'可报名',type:'平台'},
+    {key:3,name:'会员日全场满减',time:'2026-02-20',status:'已报名',type:'平台'},
+  ];
+  const myActs = [
+    {key:1,name:'新品免费试饮',time:'2026-02-15 ~ 02-17',participants:45,conversions:12,status:'进行中'},
+    {key:2,name:'集章兑好礼',time:'2026-01-01 ~ 01-31',participants:230,conversions:89,status:'已结束'},
+  ];
+  const [joinModal, setJoinModal] = useState(false);
+  const [createModal, setCreateModal] = useState(false);
+  return <div>
+    <div className="page-title">活动参与</div>
+    <Tabs items={[
+      {key:'1',label:'平台活动',children:<div>
+        <div className="card" style={{padding:0}}>
+          <Table dataSource={platformActs} pagination={false} size="middle" columns={[
+            {title:'活动名称',dataIndex:'name',key:'name',render:t=><span style={{fontWeight:500}}>{t}</span>},
+            {title:'活动时间',dataIndex:'time',key:'time'},
+            {title:'状态',dataIndex:'status',key:'s',render:s=>s==='已报名'?<span className="badge-active">已报名</span>:<span className="badge-pending">可报名</span>},
+            {title:'操作',key:'action',render:(_,r)=>r.status==='可报名'?<Button size="small" type="primary" style={{background:'var(--brand)',borderColor:'var(--brand)'}} onClick={()=>{message.success('报名成功（模拟）')}}>立即报名</Button>:<span style={{color:'#888'}}>已报名</span>},
+          ]} />
+        </div>
+      </div>},
+      {key:'2',label:'本店活动',children:<div>
+        <div style={{marginBottom:16}}>
+          <Button type="primary" style={{background:'var(--brand)',borderColor:'var(--brand)'}} onClick={()=>setCreateModal(true)}>
+            <span style={{display:'flex',alignItems:'center',gap:6}}><LIcon name="plus" size={16} color="#fff" /> 创建活动</span>
+          </Button>
+        </div>
+        <div className="card" style={{padding:0}}>
+          <Table dataSource={myActs} pagination={false} size="middle" columns={[
+            {title:'活动名称',dataIndex:'name',key:'name',render:t=><span style={{fontWeight:500}}>{t}</span>},
+            {title:'活动时间',dataIndex:'time',key:'time'},
+            {title:'参与人数',dataIndex:'participants',key:'p'},
+            {title:'转化人数',dataIndex:'conversions',key:'c'},
+            {title:'状态',dataIndex:'status',key:'s',render:s=>s==='进行中'?<span className="badge-active">进行中</span>:<span className="badge-inactive">已结束</span>},
+            {title:'操作',key:'action',render:()=><Button size="small">查看详情</Button>},
+          ]} />
+        </div>
+      </div>},
+    ]} />
+    <Modal title="创建本店活动" open={createModal} onCancel={()=>setCreateModal(false)} onOk={()=>{message.success('活动创建成功（模拟）');setCreateModal(false)}} okText="创建" cancelText="取消" okButtonProps={{style:{background:'var(--brand)',borderColor:'var(--brand)'}}}>
+      <Form layout="vertical" style={{marginTop:16}}>
+        <Form.Item label="活动名称"><Input placeholder="如：买三送一" /></Form.Item>
+        <Form.Item label="活动时间"><DatePicker.RangePicker style={{width:'100%'}} /></Form.Item>
+        <Form.Item label="活动描述"><Input.TextArea rows={3} placeholder="活动规则说明" /></Form.Item>
+      </Form>
+    </Modal>
+  </div>;
+}
+
+function PageReview() {
+  const [data, setData] = useState(reviews);
+  const [replyModal, setReplyModal] = useState(null);
+  const [replyText, setReplyText] = useState('');
+  const doReply = () => {
+    setData(prev => prev.map(r => r.key === replyModal.key ? {...r, replied: true} : r));
+    message.success('回复成功（模拟）');
+    setReplyModal(null);
+    setReplyText('');
+  };
+  const renderStars = (rating) => {
+    const full = Math.floor(rating);
+    const half = rating % 1 >= 0.5;
+    let s = '';
+    for(let i=0;i<full;i++) s+='★';
+    if(half) s+='☆';
+    return <span className="stars">{s} {rating.toFixed(1)}</span>;
+  };
+  return <div>
+    <div className="page-title">评价管理</div>
+    <div className="stat-cards" style={{gridTemplateColumns:'repeat(3,1fr)',marginBottom:20}}>
+      <div className="stat-card"><div className="label">总评价数</div><div className="value">15</div></div>
+      <div className="stat-card"><div className="label">平均评分</div><div className="value">4.3</div></div>
+      <div className="stat-card"><div className="label">已回复率</div><div className="value">{Math.round(data.filter(r=>r.replied).length/data.length*100)}%</div></div>
+    </div>
+    <div className="card" style={{padding:0}}>
+      <Table dataSource={data} pagination={{pageSize:8}} size="middle" columns={[
+        {title:'用户',dataIndex:'user',key:'user'},
+        {title:'评分',dataIndex:'rating',key:'rating',render:v=>renderStars(v),sorter:(a,b)=>a.rating-b.rating},
+        {title:'评价内容',dataIndex:'content',key:'content',width:300},
+        {title:'时间',dataIndex:'time',key:'time'},
+        {title:'状态',dataIndex:'replied',key:'replied',render:v=>v?<span className="badge-active">已回复</span>:<span className="badge-pending">待回复</span>},
+        {title:'操作',key:'action',render:(_,r)=>r.replied?<span style={{color:'#888'}}>已回复</span>:<Button size="small" type="primary" style={{background:'var(--brand)',borderColor:'var(--brand)'}} onClick={()=>setReplyModal(r)}>回复</Button>},
+      ]} />
+    </div>
+    <Modal title={`回复 ${replyModal?.user} 的评价`} open={!!replyModal} onCancel={()=>setReplyModal(null)} onOk={doReply} okText="提交回复" cancelText="取消" okButtonProps={{style:{background:'var(--brand)',borderColor:'var(--brand)'}}}>
+      {replyModal && <div style={{marginBottom:16}}>
+        <div style={{background:'#f5f5f5',padding:12,borderRadius:8,marginBottom:12}}>
+          <div style={{marginBottom:4}}>{renderStars(replyModal.rating)}</div>
+          <div style={{color:'#555'}}>{replyModal.content}</div>
+        </div>
+        <Input.TextArea rows={3} value={replyText} onChange={e=>setReplyText(e.target.value)} placeholder="输入回复内容..." />
+      </div>}
+    </Modal>
+  </div>;
+}
+
+function PageSettings() {
+  return <div>
+    <div className="page-title">店铺设置</div>
+    <div className="card">
+      <div className="card-title">店铺封面</div>
+      <div className="img-placeholder-wide"><LIcon name="image" size={32} color="rgba(255,255,255,.5)" /><span style={{marginLeft:8}}>店铺封面图 1200×400</span></div>
+    </div>
+    <div className="card">
+      <div className="card-title">基本信息</div>
+      <div style={{display:'flex',gap:24}}>
+        <div className="img-placeholder"><LIcon name="image" size={24} color="#fff" /><span style={{marginLeft:4,fontSize:12}}>Logo</span></div>
+        <div style={{flex:1}}>
+          <Form layout="vertical" initialValues={{
+            name:'星巴克（成都锦江东韵里店）',
+            address:'成都市锦江区东韵里16号商业街 B1-102',
+            phone:'028-8888-6666',
+            hours:'07:30 - 22:00',
+            category:'咖啡茶饮',
+            floor:'B1层',
+            intro:'星巴克臻选门店，提供手工调制咖啡及精选茶饮，舒适的第三空间体验。'
+          }}>
+            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'0 20px'}}>
+              <Form.Item label="店铺名称" name="name"><Input /></Form.Item>
+              <Form.Item label="联系电话" name="phone"><Input /></Form.Item>
+              <Form.Item label="店铺地址" name="address"><Input /></Form.Item>
+              <Form.Item label="营业时间" name="hours"><Input /></Form.Item>
+              <Form.Item label="经营分类" name="category"><Select options={[{label:'咖啡茶饮',value:'咖啡茶饮'},{label:'餐饮美食',value:'餐饮美食'},{label:'零售购物',value:'零售购物'},{label:'生活服务',value:'生活服务'}]} /></Form.Item>
+              <Form.Item label="楼层位置" name="floor"><Select options={[{label:'B1层',value:'B1层'},{label:'1层',value:'1层'},{label:'2层',value:'2层'},{label:'3层',value:'3层'}]} /></Form.Item>
+            </div>
+            <Form.Item label="店铺简介" name="intro"><Input.TextArea rows={3} /></Form.Item>
+            <Form.Item><Button type="primary" style={{background:'var(--brand)',borderColor:'var(--brand)'}} onClick={()=>message.success('保存成功（模拟）')}>保存修改</Button></Form.Item>
+          </Form>
+        </div>
+      </div>
+    </div>
+  </div>;
+}
+
+// ============ APP ============
+const menuItems = [
+  {key:'overview',label:'店铺概览',icon:'layout-dashboard'},
+  {key:'verify',label:'核销管理',icon:'scan-line'},
+  {key:'coupon',label:'优惠券管理',icon:'ticket'},
+  {key:'member',label:'会员分析',icon:'users'},
+  {key:'activity',label:'活动参与',icon:'party-popper'},
+  {key:'review',label:'评价管理',icon:'message-square'},
+  {key:'settings',label:'店铺设置',icon:'settings'},
+];
+
+function App() {
+  const [current, setCurrent] = useState('overview');
+  const pages = {overview:PageOverview,verify:PageVerify,coupon:PageCoupon,member:PageMember,activity:PageActivity,review:PageReview,settings:PageSettings};
+  const PageComp = pages[current];
+  return <div className="layout">
+    <div className="header">
+      <div className="header-left">
+        <div className="header-logo">16</div>
+        <span>星巴克（东韵里店）商户后台</span>
+      </div>
+      <div className="header-right">
+        <span className="merchant-name"><LIcon name="store" size={14} color="rgba(255,255,255,.65)" style={{marginRight:4}} /> 星巴克（成都锦江东韵里店）</span>
+        <Button size="small" ghost style={{borderColor:'rgba(255,255,255,.3)',color:'rgba(255,255,255,.65)'}}>退出</Button>
+      </div>
+    </div>
+    <div className="body-wrap">
+      <div className="sidebar">
+        {menuItems.map(m => <div key={m.key} className={`menu-item${current===m.key?' active':''}`} onClick={()=>setCurrent(m.key)}>
+          <LIcon name={m.icon} size={18} /> {m.label}
+        </div>)}
+      </div>
+      <div className="main"><PageComp /></div>
+    </div>
+  </div>;
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
