@@ -458,6 +458,7 @@ function PageSettings() {
               <Form.Item label="营业时间" name="hours"><Input /></Form.Item>
               <Form.Item label="经营分类" name="category"><Select options={[{label:'咖啡茶饮',value:'咖啡茶饮'},{label:'餐饮美食',value:'餐饮美食'},{label:'零售购物',value:'零售购物'},{label:'生活服务',value:'生活服务'}]} /></Form.Item>
               <Form.Item label="楼层位置" name="floor"><Select options={[{label:'B1层',value:'B1层'},{label:'1层',value:'1层'},{label:'2层',value:'2层'},{label:'3层',value:'3层'}]} /></Form.Item>
+              <Form.Item label="宠物友好" name="pet" valuePropName="checked"><Select options={[{label:'是',value:true},{label:'否',value:false}]} /></Form.Item>
             </div>
             <Form.Item label="店铺简介" name="intro"><Input.TextArea rows={3} /></Form.Item>
             <Form.Item><Button type="primary" style={{background:'var(--brand)',borderColor:'var(--brand)'}} onClick={()=>message.success('保存成功（模拟）')}>保存修改</Button></Form.Item>

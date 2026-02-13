@@ -131,10 +131,10 @@ const {useState, useEffect, useMemo, useCallback, useRef} = React;
 
 // ===== DATA =====
 const MERCHANTS = [
-  {id:1,name:'星巴克（成都锦江东韵里店）',category:'咖啡茶饮',floor:'1F',rating:4.3,price:'¥30/人',status:'营业中'},
-  {id:2,name:'留一手火锅',category:'火锅',floor:'2F',rating:4.5,price:'¥85/人',status:'营业中'},
-  {id:3,name:'全家便利店',category:'便利店',floor:'1F',rating:4.1,price:'¥15/人',status:'营业中'},
-  {id:4,name:'比亚迪体验中心',category:'汽车',floor:'1F',rating:4.6,price:'-',status:'营业中'},
+  {id:1,name:'星巴克（成都锦江东韵里店）',category:'咖啡茶饮',floor:'1F',rating:4.3,price:'¥30/人',status:'营业中',pet:true},
+  {id:2,name:'留一手火锅',category:'火锅',floor:'2F',rating:4.5,price:'¥85/人',status:'营业中',pet:false},
+  {id:3,name:'全家便利店',category:'便利店',floor:'1F',rating:4.1,price:'¥15/人',status:'营业中',pet:false},
+  {id:4,name:'比亚迪体验中心',category:'汽车',floor:'1F',rating:4.6,price:'-',status:'营业中',pet:true},
   {id:5,name:'嗨味小馆',category:'小吃快餐',floor:'1F',rating:4.4,price:'¥25/人',status:'营业中'},
   {id:6,name:'放鱼岛鲜鱼火锅',category:'火锅',floor:'2F',rating:4.3,price:'¥70/人',status:'营业中'},
   {id:7,name:'当时麻辣烫',category:'小吃快餐',floor:'1F',rating:4.2,price:'¥20/人',status:'营业中'},
@@ -332,12 +332,12 @@ function MerchantPage(){
         h('button',{className:'btn btn-primary',onClick:openAdd},h(LucideIcon,{name:'plus',size:14}),'新增商户')
       ),
       h('table',{className:'data-table'},
-        h('thead',null,h('tr',null,['名称','分类','楼层','评分','人均','状态','操作'].map(t=>h('th',{key:t},t)))),
+        h('thead',null,h('tr',null,['名称','分类','楼层','宠物友好','评分','状态','操作'].map(t=>h('th',{key:t},t)))),
         h('tbody',null,paged.map(m=>
           h('tr',{key:m.id},
             h('td',{style:{fontWeight:500}},m.name),h('td',null,m.category),h('td',null,m.floor),
+            h('td',null,h(Toggle,{value:m.pet})),
             h('td',null,h('span',{style:{color:'var(--brand)',fontWeight:600}},m.rating+'分')),
-            h('td',null,m.price),
             h('td',null,h('span',{className:'status-tag '+statusClass(m.status)},m.status)),
             h('td',null,h('button',{className:'btn btn-sm',onClick:()=>openEdit(m)},h(LucideIcon,{name:'pencil',size:12}),'编辑'))
           )

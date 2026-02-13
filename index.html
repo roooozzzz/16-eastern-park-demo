@@ -184,6 +184,17 @@ body{
 .detail-footer{padding:20px;border-top:1px solid var(--card-border)}
 .action-btn{background:var(--primary);color:#fff;border:none;padding:16px;border-radius:var(--radius-md);width:100%;font-size:15px;font-weight:600}
 
+/* Pet Friendly UI */
+.pet-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;background:rgba(20,184,166,0.1);color:var(--primary-light);border-radius:20px;font-size:10px;font-weight:600;margin-top:4px}
+.pet-badge i{width:10px;height:10px}
+.pet-card-wrap{margin:0 16px 20px;padding:20px;background:linear-gradient(135deg,rgba(20,184,166,0.1),rgba(13,107,94,0.05));border:1px dashed var(--card-border);border-radius:var(--radius-lg);display:flex;align-items:center;gap:16px;cursor:pointer}
+.pet-avatar{width:56px;height:56px;border-radius:50%;background-size:cover;background-position:center;border:2px solid var(--primary-light)}
+.pet-info h4{font-size:15px;margin-bottom:2px}
+.pet-info p{font-size:11px;color:var(--text-tertiary)}
+.buddy-indicator{padding:4px 12px;background:var(--card-solid);border:1px solid var(--card-border);border-radius:20px;font-size:10px;color:var(--text-secondary);display:flex;align-items:center;gap:6px;margin:0 20px 12px}
+.buddy-dot-live{width:6px;height:6px;background:var(--success);border-radius:50%;box-shadow:0 0 8px var(--success);animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.4}}
+
 /* =============== MERCHANTS =============== */
 .merchants-header{padding:16px 20px 0;padding-top:calc(16px + env(safe-area-inset-top))}
 .merchants-header h2{font-size:20px;font-weight:700;letter-spacing:1px}
@@ -463,6 +474,9 @@ body{
     </div>
   </div>
 
+  <div class="section-title">东韵萌宠 · 遛狗搭子</div>
+  <div class="buddy-indicator"><span class="buddy-dot-live"></span> 当前街区内有 12 只萌宠正在漫步</div>
+
   <div class="section-title">每日瞬间</div>
   <div class="moments-feed" id="momentsFeed">
     <!-- Moments will be injected here -->
@@ -612,6 +626,16 @@ body{
     <div class="badge"><i data-lucide="star" style="width:11px;height:11px;margin-right:4px"></i>金卡会员</div>
   </div>
 
+  <div class="section-title">东韵萌宠名片</div>
+  <div class="pet-card-wrap" onclick="showToast('元宝的名片','金毛 · 3岁 · 性格活泼 · 街区明星狗')">
+    <div class="pet-avatar" style="background-image:url('https://images.unsplash.com/photo-1552053831-71594a27632d?w=200')"></div>
+    <div class="pet-info">
+      <h4>元宝 (Yuan Bao)</h4>
+      <p>金毛寻回犬 · 已在东韵漫步 156 次</p>
+      <div class="pet-badge"><i data-lucide="award"></i> 街区活跃先锋</div>
+    </div>
+  </div>
+
   <div class="member-card" id="memberCard" onclick="showToast('会员码已更新','此码每 30 秒自动刷新，请在支付时出示')">
     <div class="card-shine"></div>
     <div class="barcode"></div>
@@ -639,6 +663,10 @@ body{
     </div>
     <div class="menu-item" onclick="showToast('停车缴费','正在查询车牌号 A88888 的停车费用...')">
       <span class="menu-label"><svg class="svg-icon" style="width:20px;height:20px;color:var(--primary-light)"><svg viewBox="0 0 24 24"><path d="M5 17h14M7 11l3-6h4l3 6M4 17a2 2 0 1 0 4 0M16 17a2 2 0 1 0 4 0"/></svg></svg> 停车缴费</span>
+      <span class="arrow"><i data-lucide="chevron-right"></i></span>
+    </div>
+    <div class="menu-item" onclick="showToast('紧急求助已发出','安保人员将在 3 分钟内到达您的位置')">
+      <span class="menu-label"><i data-lucide="help-circle" style="color:var(--error)"></i> 宠物紧急求助</span>
       <span class="arrow"><i data-lucide="chevron-right"></i></span>
     </div>
     <div class="menu-item" onclick="showToast('设置中心','包含账号、隐私及通知偏好设置')">
@@ -710,7 +738,8 @@ body{
 const MOMENTS = [
   {id:1, image:'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800', content:'晨光中的东韵16号，光影流转，万物生长。在这里，艺术不再是挂在墙上的标本，而是每一次呼吸的节奏。', time:'08:30', likes:24, author:'东韵运营团队'},
   {id:2, image:'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=800', content:'一杯手冲的时间，足以观察一次成都云层的变幻。星巴克臻选店的阳光位，是今日推荐的最佳放空点。', time:'昨天 14:20', likes:56, author:'CoffeeLover'},
-  {id:3, image:'https://images.unsplash.com/photo-1559339352-11d035aa65de?w=800', content:'“春日市集”已经在紧锣密鼓地布置中了，艺术广场上的每一根线条都在期待本周六的重逢。', time:'昨天 10:15', likes:89, author:'东韵16号-梅梅'},
+  {id:3, image:'https://images.unsplash.com/photo-1559339352-11d035aa65de?w=800', content:'“春日市集”已经在紧锣密鼓地布置中了，艺术广场上的每一根线条都在期待本周六的重逢。', time:'昨天 10:15', likes:89, author:'东韵16号-Aria'},
+  {id:4, image:'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=800', content:'在街区偶遇了一只超级礼貌的金毛，它的名字叫“元宝”。东韵16号永远欢迎这些毛茸茸的邻居。 #东韵萌宠#', time:'3小时前', likes:128, author:'社区主理人'},
 ];
 
 const ACTIVITIES = [
@@ -871,10 +900,10 @@ bc.addEventListener('touchend',()=>{
 
 // ===== MERCHANTS =====
 const merchants=[
-  {name:'星巴克咖啡',cat:'餐饮',icon:'coffee',rating:4.8,desc:'臻选门店·会员9折',semi:true},
-  {name:'全家便利店',cat:'零售',icon:'store',rating:4.5,desc:'24H营业·满30减5',semi:true},
-  {name:'比亚迪汽车',cat:'汽车',icon:'car',rating:4.9,desc:'新能源体验中心·试驾礼',semi:false},
-  {name:'老码头火锅',cat:'餐饮',icon:'flame',rating:4.7,desc:'地道重庆味·会员88折',semi:true}
+  {name:'星巴克咖啡',cat:'餐饮',icon:'coffee',rating:4.8,desc:'臻选门店·会员9折',semi:true,pet:true},
+  {name:'全家便利店',cat:'零售',icon:'store',rating:4.5,desc:'24H营业·满30减5',semi:true,pet:false},
+  {name:'比亚迪汽车',cat:'汽车',icon:'car',rating:4.9,desc:'新能源体验中心·试驾礼',semi:false,pet:true},
+  {name:'老码头火锅',cat:'餐饮',icon:'flame',rating:4.7,desc:'地道重庆味·会员88折',semi:true,pet:false}
 ];
 let currentCat='全部';
 
@@ -910,6 +939,7 @@ function renderMerchants(q=''){
         <span class="m-cat">${m.cat}</span>
         <h4>${m.name}</h4>
         <span class="m-desc">${m.desc}</span>
+        ${m.pet ? '<div class="pet-badge"><i data-lucide="paw-print"></i> 宠物友好</div>' : ''}
       </div>
       <div class="merchant-rating">
         <div class="rating-stars">${renderStars(m.rating)}</div>
