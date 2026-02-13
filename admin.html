@@ -131,10 +131,10 @@ const {useState, useEffect, useMemo, useCallback, useRef} = React;
 
 // ===== DATA =====
 const MERCHANTS = [
-  {id:1,name:'星巴克（成都锦江东韵里店）',category:'咖啡茶饮',floor:'1F',rating:4.3,price:'¥30/人',status:'营业中',pet:true},
-  {id:2,name:'留一手火锅',category:'火锅',floor:'2F',rating:4.5,price:'¥85/人',status:'营业中',pet:false},
-  {id:3,name:'全家便利店',category:'便利店',floor:'1F',rating:4.1,price:'¥15/人',status:'营业中',pet:false},
-  {id:4,name:'比亚迪体验中心',category:'汽车',floor:'1F',rating:4.6,price:'-',status:'营业中',pet:true},
+  {id:1,name:'星巴克（成都锦江东韵里店）',category:'咖啡茶饮',building:'1栋',floor:'1F',rating:4.3,price:'¥30/人',status:'营业中',pet:true},
+  {id:2,name:'留一手火锅',category:'火锅',building:'2栋',floor:'2F',rating:4.5,price:'¥85/人',status:'营业中',pet:false},
+  {id:3,name:'全家便利店',category:'便利店',building:'1栋',floor:'1F',rating:4.1,price:'¥15/人',status:'营业中',pet:false},
+  {id:4,name:'比亚迪体验中心',category:'汽车',building:'3栋',floor:'1F',rating:4.6,price:'-',status:'营业中',pet:true},
   {id:5,name:'嗨味小馆',category:'小吃快餐',floor:'1F',rating:4.4,price:'¥25/人',status:'营业中'},
   {id:6,name:'放鱼岛鲜鱼火锅',category:'火锅',floor:'2F',rating:4.3,price:'¥70/人',status:'营业中'},
   {id:7,name:'当时麻辣烫',category:'小吃快餐',floor:'1F',rating:4.2,price:'¥20/人',status:'营业中'},
@@ -308,7 +308,7 @@ function Dashboard(){
 }
 
 function MerchantPage(){
-  const [data,setData]=useState(MERCHANTS);
+  const [data,setData]=useState(MERCHANTS.map(m=>({building:m.building||'1栋',...m})));
   const [search,setSearch]=useState('');
   const [page,setPage]=useState(1);
   const [modal,setModal]=useState(null);
@@ -316,7 +316,7 @@ function MerchantPage(){
   const filtered=data.filter(m=>m.name.toLowerCase().includes(search.toLowerCase())||m.category.includes(search));
   const paged=filtered.slice((page-1)*10,page*10);
   function openEdit(m){setForm({...m});setModal('edit')}
-  function openAdd(){setForm({id:data.length+1,name:'',category:'',floor:'1F',rating:4.0,price:'',status:'营业中'});setModal('add')}
+  function openAdd(){setForm({id:data.length+1,name:'',category:'',building:'1栋',floor:'1F',rating:4.0,price:'',status:'营业中',pet:false});setModal('add')}
   function save(){
     if(modal==='edit')setData(d=>d.map(m=>m.id===form.id?form:m));
     else setData(d=>[...d,form]);
@@ -332,10 +332,10 @@ function MerchantPage(){
         h('button',{className:'btn btn-primary',onClick:openAdd},h(LucideIcon,{name:'plus',size:14}),'新增商户')
       ),
       h('table',{className:'data-table'},
-        h('thead',null,h('tr',null,['名称','分类','楼层','宠物友好','评分','状态','操作'].map(t=>h('th',{key:t},t)))),
+        h('thead',null,h('tr',null,['名称','分类','楼幢','楼层','宠物友好','评分','状态','操作'].map(t=>h('th',{key:t},t)))),
         h('tbody',null,paged.map(m=>
           h('tr',{key:m.id},
-            h('td',{style:{fontWeight:500}},m.name),h('td',null,m.category),h('td',null,m.floor),
+            h('td',{style:{fontWeight:500}},m.name),h('td',null,m.category),h('td',null,m.building||'-'),h('td',null,m.floor),
             h('td',null,h(Toggle,{value:m.pet})),
             h('td',null,h('span',{style:{color:'var(--brand)',fontWeight:600}},m.rating+'分')),
             h('td',null,h('span',{className:'status-tag '+statusClass(m.status)},m.status)),
@@ -350,7 +350,10 @@ function MerchantPage(){
       h('div',{className:'form-group'},h('label',null,'商户名称'),h('input',{value:form.name||'',onChange:e=>setForm({...form,name:e.target.value})})),
       h('div',{className:'form-row'},
         h('div',{className:'form-group'},h('label',null,'分类'),h('input',{value:form.category||'',onChange:e=>setForm({...form,category:e.target.value})})),
-        h('div',{className:'form-group'},h('label',null,'楼层'),h('select',{value:form.floor||'1F',onChange:e=>setForm({...form,floor:e.target.value})},['1F','2F','3F','B1'].map(f=>h('option',{key:f,value:f},f))))
+        h('div',{className:'form-group'},h('label',null,'楼幢'),h('select',{value:form.building||'1栋',onChange:e=>setForm({...form,building:e.target.value})},['1栋','2栋','3栋','9栋','10栋'].map(b=>h('option',{key:b,value:b},b))))
+      ),
+      h('div',{className:'form-row'},
+        h('div',{className:'form-group'},h('label',null,'楼层'),h('select',{value:form.floor||'1F',onChange:e=>setForm({...form,floor:e.target.value})},['1F','2F','3F','4F','B1','B2'].map(f=>h('option',{key:f,value:f},f))))
       ),
       h('div',{className:'form-row'},
         h('div',{className:'form-group'},h('label',null,'评分'),h('input',{type:'number',step:0.1,min:0,max:5,value:form.rating||'',onChange:e=>setForm({...form,rating:parseFloat(e.target.value)})})),
