@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<title>16 EASTERN PARK v1.2</title>
+<title>16 EASTERN PARK v1.3</title>
 <script src="https://unpkg.com/lucide@0.344.0/dist/umd/lucide.min.js"></script>
 <style>
 :root{
@@ -132,7 +132,7 @@ body{
 
 /* Activity Items */
 .activity-item{margin:0 16px 10px;padding:16px 18px;background:var(--card-solid);border:1px solid var(--card-border);
-  border-radius:var(--radius-md);display:flex;gap:14px;align-items:center;
+  border-radius:var(--radius-md);display:flex;gap:14px;align-items:center;cursor:pointer;
   transition:transform .2s,border-color .2s;will-change:transform}
 .activity-item:active{transform:scale(0.98);border-color:rgba(13,107,94,0.35)}
 .activity-dot{width:8px;height:8px;border-radius:50%;background:var(--primary-light);flex-shrink:0;
@@ -143,13 +143,17 @@ body{
 
 /* Moments Feed */
 .moments-feed{padding:0 16px}
-.moment-card{background:var(--card-solid);border:1px solid var(--card-border);border-radius:var(--radius-md);overflow:hidden;margin-bottom:12px}
-.moment-img{height:160px;background-size:cover;background-position:center}
+.moment-card{background:var(--card-solid);border:1px solid var(--card-border);border-radius:var(--radius-md);overflow:hidden;margin-bottom:12px;cursor:pointer}
+.moment-img{height:160px;background-size:cover;background-position:center;position:relative}
+.moment-img::after{content:'';position:absolute;inset:0;background:linear-gradient(to top, rgba(0,0,0,0.3), transparent)}
 .moment-content{padding:12px 16px}
-.moment-content p{font-size:13px;line-height:1.5;color:var(--text-secondary);margin-bottom:8px}
+.moment-content p{font-size:13px;line-height:1.5;color:var(--text-secondary);margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .moment-footer{display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--text-tertiary)}
-.moment-actions{display:flex;align-items:center;gap:4px}
-.moment-actions i{width:12px;height:12px}
+.moment-actions{display:flex;align-items:center;gap:12px}
+.moment-action{display:flex;align-items:center;gap:4px;transition:all .2s}
+.moment-action.liked{color:var(--error)}
+.moment-action.liked i{fill:var(--error)}
+.moment-action i{width:14px;height:14px}
 
 /* Joint Reward Modal */
 .reward-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:1000;display:none;align-items:center;justify-content:center;padding:40px;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
@@ -162,8 +166,23 @@ body{
 .reward-badge i{width:40px;height:40px;color:var(--primary-light)}
 .reward-benefit{font-size:24px;font-weight:700;color:#fff;margin-bottom:8px}
 .reward-to{font-size:12px;color:var(--primary-light);margin-bottom:32px}
-.reward-btn{background:#fff;color:var(--primary);padding:14px;border-radius:var(--radius-md);font-weight:600;font-size:14px}
-.reward-close{position:absolute;bottom:-60px;left:50%;transform:translateX(-50%);color:rgba(255,255,255,0.5)}
+.reward-btn{background:#fff;color:var(--primary);padding:14px;border-radius:var(--radius-md);font-weight:600;font-size:14px;width:100%}
+.reward-close{position:absolute;bottom:-60px;left:50%;transform:translateX(-50%);color:rgba(255,255,255,0.5);cursor:pointer}
+
+/* Detail Modal */
+.detail-modal{position:fixed;inset:0;background:var(--bg);z-index:1100;display:none;flex-direction:column;animation:slideUp .35s cubic-bezier(.4,0,.2,1)}
+.detail-modal.show{display:flex}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.detail-header{padding:calc(16px + env(safe-area-inset-top)) 20px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--card-border)}
+.detail-header h3{flex:1;font-size:16px;font-weight:600}
+.detail-close{cursor:pointer;color:var(--text-secondary)}
+.detail-body{flex:1;overflow-y:auto;padding:20px}
+.detail-img{width:100%;height:240px;border-radius:var(--radius-md);background-size:cover;background-position:center;margin-bottom:20px}
+.detail-title{font-size:20px;font-weight:700;margin-bottom:12px}
+.detail-meta{font-size:12px;color:var(--text-tertiary);margin-bottom:20px;display:flex;gap:12px}
+.detail-text{font-size:15px;line-height:1.7;color:var(--text-secondary);white-space:pre-wrap}
+.detail-footer{padding:20px;border-top:1px solid var(--card-border)}
+.action-btn{background:var(--primary);color:#fff;border:none;padding:16px;border-radius:var(--radius-md);width:100%;font-size:15px;font-weight:600}
 
 /* =============== MERCHANTS =============== */
 .merchants-header{padding:16px 20px 0;padding-top:calc(16px + env(safe-area-inset-top))}
@@ -356,7 +375,7 @@ body{
   background:rgba(10,31,28,0.95);border:1px solid var(--primary);
   -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);
   color:var(--text);padding:24px 36px;border-radius:var(--radius-lg);text-align:center;
-  z-index:200;opacity:0;pointer-events:none;transition:all .3s cubic-bezier(.4,0,.2,1);
+  z-index:2000;opacity:0;pointer-events:none;transition:all .3s cubic-bezier(.4,0,.2,1);
   box-shadow:0 8px 32px rgba(0,0,0,0.4)}
 .toast.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
 .toast .check{margin-bottom:10px;display:flex;justify-content:center}
@@ -396,23 +415,23 @@ body{
     <h1>16 EASTERN PARK</h1>
     <div class="header-actions">
       <i data-lucide="search" onclick="switchTab(1)"></i>
-      <i data-lucide="bell"></i>
+      <i data-lucide="bell" onclick="showToast('暂无消息','所有的通知都会显示在这里')"></i>
     </div>
   </div>
 
   <div class="banner-container" id="bannerContainer">
     <div class="banner-track" id="bannerTrack">
-      <div class="banner-slide">
+      <div class="banner-slide" onclick="openActivityDetail(0)">
         <div class="banner-tag">限时活动</div>
         <h2>新春会员季<br>双倍积分周</h2>
         <p>2026.02.08 — 02.22 · 全场商户参与</p>
       </div>
-      <div class="banner-slide">
+      <div class="banner-slide" onclick="openActivityDetail(1)">
         <div class="banner-tag">艺术展览</div>
         <h2>春日市集<br>限定开启</h2>
         <p>2026.02.15 · 艺术广场 · 10:00-18:00</p>
       </div>
-      <div class="banner-slide">
+      <div class="banner-slide" onclick="openActivityDetail(2)">
         <div class="banner-tag">会员专属</div>
         <h2>咖啡品鉴会<br>免费报名中</h2>
         <p>2026.02.20 · 星巴克臻选门店</p>
@@ -445,51 +464,33 @@ body{
   </div>
 
   <div class="section-title">每日瞬间</div>
-  <div class="moments-feed">
-    <div class="moment-card scroll-reveal">
-      <div class="moment-img" style="background-image:url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400')"></div>
-      <div class="moment-content">
-        <p>晨光中的东韵16号，光影流转，万物生长。</p>
-        <div class="moment-footer">
-          <span>08:30</span>
-          <div class="moment-actions"><i data-lucide="heart"></i> 24</div>
-        </div>
-      </div>
-    </div>
+  <div class="moments-feed" id="momentsFeed">
+    <!-- Moments will be injected here -->
   </div>
 
   <div class="section-title">热门商户</div>
   <div class="hot-merchants">
-    <div class="merchant-card-h">
+    <div class="merchant-card-h" onclick="switchTab(1)">
       <div class="m-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:20px;height:20px;color:var(--primary-light)"><path d="M17 8h1a4 4 0 110 8h-1"/><path d="M3 8h14v9a4 4 0 01-4 4H7a4 4 0 01-4-4V8z"/><line x1="6" y1="2" x2="6" y2="4"/><line x1="10" y1="2" x2="10" y2="4"/><line x1="14" y1="2" x2="14" y2="4"/></svg></div>
       <h4>星巴克</h4><p>会员9折</p>
     </div>
-    <div class="merchant-card-h">
+    <div class="merchant-card-h" onclick="switchTab(1)">
       <div class="m-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:20px;height:20px;color:var(--primary-light)"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
       <h4>全家</h4><p>满30减5</p>
     </div>
-    <div class="merchant-card-h">
+    <div class="merchant-card-h" onclick="switchTab(1)">
       <div class="m-icon"><svg class="svg-icon" style="width:20px;height:20px;color:var(--primary-light)"><svg viewBox="0 0 24 24"><path d="M5 17h14M7 11l3-6h4l3 6M4 17a2 2 0 1 0 4 0M16 17a2 2 0 1 0 4 0"/></svg></svg></div>
       <h4>比亚迪</h4><p>试驾礼</p>
     </div>
-    <div class="merchant-card-h">
+    <div class="merchant-card-h" onclick="switchTab(1)">
       <div class="m-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:20px;height:20px;color:var(--primary-light)"><path d="M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 11-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 002.5 2.5z"/></svg></div>
       <h4>老码头火锅</h4><p>会员88折</p>
     </div>
   </div>
 
   <div class="section-title">最新活动</div>
-  <div class="activity-item scroll-reveal">
-    <div class="activity-dot"></div>
-    <div><h4>艺术市集 · 春日限定</h4><p>02/15 — 本周六 10:00-18:00</p></div>
-  </div>
-  <div class="activity-item scroll-reveal">
-    <div class="activity-dot"></div>
-    <div><h4>会员专属品鉴会</h4><p>02/20 — 星巴克臻选门店</p></div>
-  </div>
-  <div class="activity-item scroll-reveal">
-    <div class="activity-dot"></div>
-    <div><h4>比亚迪新能源试驾日</h4><p>02/22 — B1停车场</p></div>
+  <div id="activityList">
+    <!-- Activities will be injected here -->
   </div>
 </div>
 
@@ -522,7 +523,7 @@ body{
   <div class="points-progress-wrap scroll-reveal">
     <div class="points-progress-header">
       <span>距离下一等级</span>
-      <strong>1,280 / 2,000 积分</strong>
+      <strong id="pointsProgressText">1,280 / 2,000 积分</strong>
     </div>
     <div class="points-bar">
       <div class="points-bar-fill" id="pointsBarFill" style="width:0%"></div>
@@ -571,20 +572,20 @@ body{
   <div class="points-mall scroll-reveal" style="margin-top:20px">
     <div class="points-mall-header">
       <h3>积分商城</h3>
-      <span>更多 <i data-lucide="chevron-right" style="width:12px;height:12px"></i></span>
+      <span onclick="showToast('敬请期待','更多精选礼品正在上架中')">更多 <i data-lucide="chevron-right" style="width:12px;height:12px"></i></span>
     </div>
     <div class="points-items">
-      <div class="points-item">
+      <div class="points-item" onclick="exchangeItem('雨天借伞')">
         <div class="item-badge">特权</div>
         <div class="pi-icon"><i data-lucide="umbrella"></i></div>
         <span>雨天借伞</span><em>0积分/会员</em>
       </div>
-      <div class="points-item">
+      <div class="points-item" onclick="exchangeItem('快递代收')">
         <div class="item-badge">特权</div>
         <div class="pi-icon"><i data-lucide="package"></i></div>
         <span>快递代收</span><em>50积分/次</em>
       </div>
-      <div class="points-item">
+      <div class="points-item" onclick="exchangeItem('星巴克升杯')">
         <div class="item-badge">HOT</div>
         <div class="pi-icon"><i data-lucide="coffee"></i></div>
         <span>星巴克升杯</span><em>200积分</em>
@@ -593,13 +594,13 @@ body{
   </div>
 
   <div class="section-title">会员活动</div>
-  <div class="activity-item scroll-reveal">
+  <div class="activity-item scroll-reveal" onclick="openActivityDetail(3)">
     <div class="activity-dot"></div>
-    <div><h4>春日积分翻倍</h4><p>消费即享双倍积分</p></div>
+    <div><h4>春日积分翻倍</h4><p>全场消费即享双倍积分</p></div>
   </div>
-  <div class="activity-item scroll-reveal">
+  <div class="activity-item scroll-reveal" onclick="showToast('推荐码：DY16-8888','将此码分享给好友注册，双方各得100积分')">
     <div class="activity-dot"></div>
-    <div><h4>推荐好友得100积分</h4><p>邀请新会员注册</p></div>
+    <div><h4>推荐好友得100积分</h4><p>邀请新会员注册，共享好礼</p></div>
   </div>
 </div>
 
@@ -611,36 +612,36 @@ body{
     <div class="badge"><i data-lucide="star" style="width:11px;height:11px;margin-right:4px"></i>金卡会员</div>
   </div>
 
-  <div class="member-card" id="memberCard">
+  <div class="member-card" id="memberCard" onclick="showToast('会员码已更新','此码每 30 秒自动刷新，请在支付时出示')">
     <div class="card-shine"></div>
     <div class="barcode"></div>
     <div class="barcode-num">6280 1688 0526 2026</div>
   </div>
 
   <div class="stats">
-    <div class="stat"><div class="val" data-target="1280" data-prefix="">0</div><div class="label">积分</div></div>
-    <div class="stat"><div class="val" data-target="3" data-prefix="">0</div><div class="label">优惠券</div></div>
+    <div class="stat" onclick="switchTab(2)"><div class="val" data-target="1280" data-prefix="">0</div><div class="label">积分</div></div>
+    <div class="stat" onclick="switchTab(2)"><div class="val" data-target="3" data-prefix="">0</div><div class="label">优惠券</div></div>
     <div class="stat"><div class="val" data-target="5" data-prefix="Lv.">Lv.0</div><div class="label">等级</div></div>
   </div>
 
   <div class="menu-list">
-    <div class="menu-item" onclick="createRipple(event)">
+    <div class="menu-item" onclick="showToast('订单记录','您近 30 天共有 8 笔订单')">
       <span class="menu-label"><i data-lucide="file-text"></i> 我的订单</span>
       <span class="arrow"><i data-lucide="chevron-right"></i></span>
     </div>
-    <div class="menu-item" onclick="createRipple(event)">
+    <div class="menu-item" onclick="switchTab(2)">
       <span class="menu-label"><i data-lucide="ticket"></i> 我的优惠券</span>
       <span class="arrow"><i data-lucide="chevron-right"></i></span>
     </div>
-    <div class="menu-item" onclick="createRipple(event)">
+    <div class="menu-item" onclick="showToast('收藏商户','您目前关注了星巴克等 3 家商户')">
       <span class="menu-label"><i data-lucide="star"></i> 收藏商户</span>
       <span class="arrow"><i data-lucide="chevron-right"></i></span>
     </div>
-    <div class="menu-item" onclick="createRipple(event)">
+    <div class="menu-item" onclick="showToast('停车缴费','正在查询车牌号 A88888 的停车费用...')">
       <span class="menu-label"><svg class="svg-icon" style="width:20px;height:20px;color:var(--primary-light)"><svg viewBox="0 0 24 24"><path d="M5 17h14M7 11l3-6h4l3 6M4 17a2 2 0 1 0 4 0M16 17a2 2 0 1 0 4 0"/></svg></svg> 停车缴费</span>
       <span class="arrow"><i data-lucide="chevron-right"></i></span>
     </div>
-    <div class="menu-item" onclick="createRipple(event)">
+    <div class="menu-item" onclick="showToast('设置中心','包含账号、隐私及通知偏好设置')">
       <span class="menu-label"><i data-lucide="settings"></i> 设置</span>
       <span class="arrow"><i data-lucide="chevron-right"></i></span>
     </div>
@@ -650,14 +651,32 @@ body{
   <div class="footer-text">生长在艺术中心的街区商业</div>
 </div>
 
+<!-- DETAIL MODAL -->
+<div class="detail-modal" id="detailModal">
+  <div class="detail-header">
+    <div class="detail-close" onclick="closeDetail()"><i data-lucide="chevron-left"></i></div>
+    <h3 id="modalTitle">详情</h3>
+    <div class="detail-share" onclick="showToast('分享成功','已生成分享海报')"><i data-lucide="share-2"></i></div>
+  </div>
+  <div class="detail-body">
+    <div class="detail-img" id="modalImg"></div>
+    <h2 class="detail-title" id="modalH2">标题</h2>
+    <div class="detail-meta" id="modalMeta"></div>
+    <div class="detail-text" id="modalText">内容</div>
+  </div>
+  <div class="detail-footer" id="modalFooter">
+    <button class="action-btn" id="modalActionBtn">立即参与</button>
+  </div>
+</div>
+
 <!-- REWARD MODAL -->
 <div class="reward-overlay" id="rewardOverlay">
   <div class="reward-card">
     <div class="reward-badge"><i data-lucide="handshake"></i></div>
     <h3>东韵联名 · 互助权益</h3>
     <p>感谢您在街区的日常互动，<br>由于您刚刚完成了签到，特赠送：</p>
-    <div class="reward-benefit">饭后消食甜品券</div>
-    <div class="reward-to">由 留一手火锅 提供</div>
+    <div class="reward-benefit" id="rewardBenefit">饭后消食甜品券</div>
+    <div class="reward-to" id="rewardTo">由 留一手火锅 提供</div>
     <div class="reward-btn" onclick="closeReward()">存入券包</div>
     <div class="reward-close" onclick="closeReward()"><i data-lucide="x-circle"></i></div>
   </div>
@@ -687,6 +706,104 @@ body{
 </div>
 
 <script>
+// ===== DATA =====
+const MOMENTS = [
+  {id:1, image:'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800', content:'晨光中的东韵16号，光影流转，万物生长。在这里，艺术不再是挂在墙上的标本，而是每一次呼吸的节奏。', time:'08:30', likes:24, author:'东韵运营团队'},
+  {id:2, image:'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=800', content:'一杯手冲的时间，足以观察一次成都云层的变幻。星巴克臻选店的阳光位，是今日推荐的最佳放空点。', time:'昨天 14:20', likes:56, author:'CoffeeLover'},
+  {id:3, image:'https://images.unsplash.com/photo-1559339352-11d035aa65de?w=800', content:'“春日市集”已经在紧锣密鼓地布置中了，艺术广场上的每一根线条都在期待本周六的重逢。', time:'昨天 10:15', likes:89, author:'东韵16号-梅梅'},
+];
+
+const ACTIVITIES = [
+  {id:0, title:'新春会员季 · 双倍积分周', meta:'2026.02.08 — 02.22 · 全场商户', img:'https://images.unsplash.com/photo-1531266752426-aad4d93095e9?w=800', text:'迎接新春，东韵16号开启双倍积分盛典。在全场任意商户消费，即可获得双倍成长积分。积攒的积分可在权益中心兑换“雨天借伞”、“限定帆布袋”等精选好礼。', btnText:'查看参与规则'},
+  {id:1, title:'春日市集 · 限定开启', meta:'02.15 · 艺术广场 · 10:00-18:00', img:'https://images.unsplash.com/photo-1533900298318-6b8da08a523e?w=800', text:'集合了 30+ 独立设计师品牌，从手工艺品到独立出版物。在春日的暖阳下，来艺术广场寻找那件属于你的唯一单品。现场还有独立乐队 Live Show，不要错过。', btnText:'领取入场券'},
+  {id:2, title:'会员专属咖啡品鉴会', meta:'02.20 · 星巴克臻选门店 · 15:00', img:'https://images.unsplash.com/photo-1442512595331-e89e73853f31?w=800', text:'星巴克黑裙咖啡师（Coffee Master）现场演绎虹吸咖啡制作。从豆种产地到烘焙艺术，带你深入探索咖啡的“第三空间”。名额有限，仅限金卡及以上会员。', btnText:'立即预约'},
+  {id:3, title:'春日积分翻倍', meta:'长期有效', img:'https://images.unsplash.com/photo-1544606111-0df83df73904?w=800', text:'为了回馈社区邻里，东韵16号推出春日能量计划。每日步行满 5000 步并在街区打卡，即可额外获赠 20 积分。让我们在艺术与自然的共生中，重塑健康生活。', btnText:'开启健康打卡'},
+];
+
+// ===== RENDER FUNCTIONS =====
+function renderMoments() {
+  const container = document.getElementById('momentsFeed');
+  container.innerHTML = MOMENTS.map(m => `
+    <div class="moment-card scroll-reveal" onclick="openMomentDetail(${m.id})">
+      <div class="moment-img" style="background-image:url('${m.image}')"></div>
+      <div class="moment-content">
+        <p>${m.content}</p>
+        <div class="moment-footer">
+          <span>${m.time} · ${m.author}</span>
+          <div class="moment-actions">
+            <div class="moment-action" onclick="event.stopPropagation();toggleLike(this, ${m.likes})">
+              <i data-lucide="heart"></i> <span>${m.likes}</span>
+            </div>
+            <div class="moment-action"><i data-lucide="message-circle"></i></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+  if(window.lucide) lucide.createIcons();
+}
+
+function renderActivities() {
+  const container = document.getElementById('activityList');
+  container.innerHTML = ACTIVITIES.slice(1, 4).map(a => `
+    <div class="activity-item scroll-reveal" onclick="openActivityDetail(${a.id})">
+      <div class="activity-dot"></div>
+      <div><h4>${a.title}</h4><p>${a.meta}</p></div>
+    </div>
+  `).join('');
+}
+
+// ===== INTERACTIONS =====
+function toggleLike(el, count) {
+  const isLiked = el.classList.toggle('liked');
+  const span = el.querySelector('span');
+  span.textContent = isLiked ? count + 1 : count;
+  if(isLiked) showToast('点赞成功','您的认可是内容创作的动力');
+}
+
+function openMomentDetail(id) {
+  const m = MOMENTS.find(x => x.id === id);
+  const modal = document.getElementById('detailModal');
+  document.getElementById('modalTitle').textContent = '瞬间详情';
+  document.getElementById('modalImg').style.backgroundImage = `url('${m.image}')`;
+  document.getElementById('modalH2').textContent = m.author + ' 的分享';
+  document.getElementById('modalMeta').textContent = m.time + ' · ' + m.likes + ' 人赞过';
+  document.getElementById('modalText').textContent = m.content;
+  document.getElementById('modalFooter').style.display = 'none';
+  modal.classList.add('show');
+}
+
+function openActivityDetail(id) {
+  const a = ACTIVITIES.find(x => x.id === id);
+  const modal = document.getElementById('detailModal');
+  document.getElementById('modalTitle').textContent = '活动详情';
+  document.getElementById('modalImg').style.backgroundImage = `url('${a.img}')`;
+  document.getElementById('modalH2').textContent = a.title;
+  document.getElementById('modalMeta').textContent = a.meta;
+  document.getElementById('modalText').textContent = a.text;
+  document.getElementById('modalFooter').style.display = 'block';
+  const btn = document.getElementById('modalActionBtn');
+  btn.textContent = a.btnText;
+  btn.onclick = () => {
+    showToast('报名成功','请凭会员码按时到场参加');
+    closeDetail();
+  };
+  modal.classList.add('show');
+}
+
+function closeDetail() {
+  document.getElementById('detailModal').classList.remove('show');
+}
+
+function exchangeItem(name) {
+  showToast('兑换成功', `已兑换“${name}”，可在权益中心查收。`);
+  const text = document.getElementById('pointsProgressText');
+  const val = parseInt(text.textContent);
+  if(name === '快递代收' && val >= 50) {
+    text.textContent = (val - 50) + ' / 2,000 积分';
+  }
+}
+
 // ===== TAB SWITCHING =====
 const pages=['page-home','page-merchants','page-benefits','page-profile'];
 const tabs=document.querySelectorAll('.tabbar .tab');
@@ -903,6 +1020,8 @@ function initScrollReveal(){
 document.addEventListener('DOMContentLoaded',()=>{
   if(window.lucide)lucide.createIcons();
   renderMerchants();
+  renderMoments();
+  renderActivities();
   initScrollReveal();
   // Animate points bar on benefits page if active
   setTimeout(()=>{
